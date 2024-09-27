@@ -1,11 +1,16 @@
 import React from "react";
 
-const Header: React.FC = () => {
-    return (
-        <section className="header">
+interface ButtonProps {
+    value: string;
+    className?: string;
+  }
 
-        </section>
+const Button: React.FC<ButtonProps> = ({value, className = ""}) => {
+    return (
+        <button className={`${className} btn font-sans bg-secondary px-6 py-3 rounded-full text-light font-semibold`}>
+            {value}
+        </button>
     )
 }
 
-export default Header;
+export default Button;

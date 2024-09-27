@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+body{
+    @apply p-5;
+}
+
+section{
+
+}
