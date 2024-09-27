@@ -10,3 +10,21 @@ body{
 section{
 
 }
+
+h1, h2, h3, h4, h5, h6{
+    @apply font-semibold;
+}
+
+h1{
+
+}
+
+.btn, button{
+    @apply font-sans bg-secondary px-6 py-3 rounded-full text-light font-semibold border-primary border
+    mx-1;
+}
+
+p{
+
+}
+
