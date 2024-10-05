@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+    --primary: #d61f04;
+    --secondary: #fa8600;
+    --accent: #156FE0;
+    --dark: #000f19;
+    --light: #fcfcfa;
+    --secondary-light: #fbae55;
+
+    --orange-gradient-background: linear-gradient(to right, var(--secondary), var(--secondary-light));
+
+}
 
 body{
     @apply p-5;
@@ -20,11 +31,8 @@ h1{
 }
 
 .btn, button{
-    @apply font-sans bg-secondary px-6 py-3 rounded-full text-light font-semibold border-primary border
+    @apply font-sans px-6 py-3 rounded-full text-light font-semibold border-primary border
     mx-1;
-}
-
-p{
-
+    background: var(--orange-gradient-background);
 }
 

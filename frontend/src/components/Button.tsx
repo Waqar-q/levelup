@@ -7,7 +7,7 @@ interface ButtonProps {
 
 const Button: React.FC<ButtonProps> = ({value, className = ""}) => {
     return (
-        <button className={`${className} btn font-sans bg-secondary px-6 py-3 rounded-full text-light font-semibold border-primary border`}>
+        <button className={`${className} btn`}>
             {value}
         </button>
     )
