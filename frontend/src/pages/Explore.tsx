@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import testImage from "../assets/Web-Development-Course-Thumbnail.jpg";
+import Checkbox from "../components/Checkbox";
 
 const Explore: React.FC = () => {
     return (
@@ -26,6 +27,7 @@ Data collection: Students learn how to collect data from webpages and incorporat
 Security: Students learn how to secure themselves from unwanted data collection and how to secure a domain name. 
 Accessibility: Students learn how to make their websites accessible to a wide range of users. "
             buttonName="Apply"/>
+            <Checkbox value="Tick this checkbox"/>
         </section>
     )
 }

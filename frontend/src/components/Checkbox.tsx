@@ -1,11 +1,18 @@
 import React from "react";
 
-const Header: React.FC = () => {
-    return (
-        <section className="header">
+interface CheckProps {
+    value: string;
+    className?: string;
+  }
 
-        </section>
+const Checkbox: React.FC<CheckProps> = ({value, className = ""}) => {
+    return (
+        <label className={`${className} checkbox flex items-center p-5 rounded-xl`}>
+        <input className="mr-4 scale-150" type="checkbox" name={value}>
+        </input>
+        <span>{value}</span>
+        </label>
     )
 }
 
-export default Header;
+export default Checkbox;
