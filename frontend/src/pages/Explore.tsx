@@ -4,6 +4,7 @@ import Button from "../components/Button";
 import Card from "../components/Card";
 import testImage from "../assets/Web-Development-Course-Thumbnail.jpg";
 import Checkbox from "../components/Checkbox";
+import Dropdown from "../components/Dropdown";
 
 const Explore: React.FC = () => {
     return (
@@ -28,6 +29,10 @@ Security: Students learn how to secure themselves from unwanted data collection 
 Accessibility: Students learn how to make their websites accessible to a wide range of users. "
             buttonName="Apply"/>
             <Checkbox value="Tick this checkbox"/>
+            <Dropdown options={[
+                'India',
+                'Africa'
+            ]} selectedValue="India"/>
         </section>
     )
 }
