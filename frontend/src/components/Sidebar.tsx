@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  className?: string;
+}
+
+
+const Sidebar: React.FC<SidebarProps> = ({className}) => {
   const [opened, toggleOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -14,7 +19,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="sidebar z-[9999]">
+    <div className="sidebar z-[9999] inset-0">
       <a onClick={toggleSidebar}>
         <i className="fas fa-bars text-3xl mx-5"></i>
       </a>
@@ -22,7 +27,7 @@ const Sidebar: React.FC = () => {
       <section
         className={`${
           opened ? "open" : "close"
-        } bg-accent text-light absolute top-0 w-full h-full max-w-[500px] -translate-x-full`}
+        } bg-accent text-light absolute top-0 w-[70%] h-full max-w-[500px] -translate-x-[80%]`}
       >
         <div className="flex justify-between items-center p-5">
           <Logo />

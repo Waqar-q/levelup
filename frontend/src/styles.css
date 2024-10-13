@@ -6,6 +6,7 @@
     --primary: #d61f04;
     --secondary: #fa8600;
     --accent: #156FE0;
+    --accent-light: #58a3eb;
     --dark: #000f19;
     --light: #fcfcfa;
     --secondary-light: #fbae55;
@@ -51,3 +52,18 @@ input{
 
 }
 
+.loader .loader-bg{
+    background: linear-gradient(to right, lightgrey , rgb(182, 181, 181), lightgrey );
+    animation: shine 2.5s linear infinite;
+}
+
+@keyframes shine{
+
+    0%{
+        transform: translateX(-100%);
+    }
+    100%{
+        transform: translateX(100%);
+    }
+
+}

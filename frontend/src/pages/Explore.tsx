@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
@@ -7,8 +7,19 @@ import Checkbox from "../components/Checkbox";
 import Dropdown from "../components/Dropdown";
 import Header from "../components/Header";
 import Input from "../components/Input_Field";
+import Loader from "../components/Loader";
 
 const Explore: React.FC = () => {
+  const [loading, setLoader] = useState(true);
+
+  useEffect(() => {
+    window.onload = () => setLoader(false);
+  }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="explore">
       <Header />
@@ -36,7 +47,7 @@ const Explore: React.FC = () => {
         <Checkbox value="Tick this checkbox" />
         <Dropdown options={["India", "Africa"]} />
 
-        <Input fieldType="text" placeholder="Waqar"/>
+        <Input fieldType="text" placeholder="Waqar" />
         <Input fieldType="password" />
         <Input fieldType="email" />
         <Input fieldType="number" />

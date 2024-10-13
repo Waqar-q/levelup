@@ -7,7 +7,7 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = (className) => {
     return (
-    <div>
+    <div className="flex place-content-center">
     <img className={`${className} w-14 mx-4`} src={logo} alt="" sizes="" />
     </div>
 )}
