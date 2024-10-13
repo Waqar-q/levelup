@@ -67,3 +67,16 @@ input{
     }
 
 }
+
+.dialog-bg.open {
+    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: 1000;
+}
+
+.dialog-bg.close {
+    backdrop-filter: blur(0px);
+    background-color: transparent;
+    display: none;
+    
+}

@@ -8,6 +8,7 @@ import Dropdown from "../components/Dropdown";
 import Header from "../components/Header";
 import Input from "../components/Input_Field";
 import Loader from "../components/Loader";
+import Dialog from "../components/Dialog";
 
 const Explore: React.FC = () => {
   const [loading, setLoader] = useState(true);
@@ -23,8 +24,11 @@ const Explore: React.FC = () => {
   return (
     <div className="explore">
       <Header />
+      
       <section className="explore-body p-5">
         <p>Explore</p>
+        <Dialog>
+      </Dialog>
         <Link to="/login">
           <button>Go to login</button>
         </Link>
