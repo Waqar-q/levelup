@@ -11,7 +11,7 @@ const Checkbox: React.FC<CheckProps> = ({value, className = ""}) => {
 
     return (
         <label className={`${className} checkbox flex items-center p-5 rounded-xl`}>
-        <input className="mr-4 scale-150" type="checkbox" name={value}>
+        <input className="mr-4 scale-150 w-min" type="checkbox" name={value}>
         </input>
         <span>{value}</span>
         </label>

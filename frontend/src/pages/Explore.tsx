@@ -9,6 +9,7 @@ import Header from "../components/Header";
 import Input from "../components/Input_Field";
 import Loader from "../components/Loader";
 import Dialog from "../components/Dialog";
+import Radio from "../components/Radio";
 
 const Explore: React.FC = () => {
   const [loading, setLoader] = useState(true);
@@ -50,6 +51,8 @@ const Explore: React.FC = () => {
         />
         <Checkbox value="Tick this checkbox" />
         <Dropdown options={["India", "Africa"]} />
+
+        <Radio value="This is a Radio button"/>
 
         <Input fieldType="text" placeholder="Waqar" />
         <Input fieldType="password" />
