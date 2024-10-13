@@ -1,5 +1,3 @@
-import { list } from "postcss";
-import { List } from "postcss/lib/list";
 import React, { useState } from "react";
 
 interface DropdownProps{

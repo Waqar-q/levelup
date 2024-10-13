@@ -15,7 +15,6 @@
 }
 
 body{
-    @apply p-5;
 }
 
 section{
@@ -34,5 +33,17 @@ h1{
     @apply font-sans px-6 py-3 rounded-full text-light font-semibold border-primary border
     mx-1;
     background: var(--orange-gradient-background);
+}
+
+.sidebar .open{
+    transform: translateX(0%);
+    transition: ease-in-out 0.2s;
+}
+
+.sidebar .close{
+
+    transform: translateX(-100%);
+    transition: ease-in-out 0.2s;
+
 }
 
