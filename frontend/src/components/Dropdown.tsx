@@ -14,7 +14,7 @@ const Dropdown: React.FC<DropdownProps> = ({className,options}) => {
     }
 
     return (
-        <select className={`${className} dropdown p-4 rounded-xl w-full max-w-96`} onChange={(e) => handleDropdownChange(e.target.value)}>
+        <select className={`${className} dropdown p-4 bg-sky-200 rounded-xl w-full max-w-96`} onChange={(e) => handleDropdownChange(e.target.value)}>
             {options.map((element) => (
                 <option key={element}>{element}</option>
             ))}

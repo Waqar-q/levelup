@@ -35,6 +35,10 @@ h1{
     background: var(--orange-gradient-background);
 }
 
+input{
+    @apply border border-accent_light p-4 rounded-xl w-full max-w-96;
+}
+
 .sidebar .open{
     transform: translateX(0%);
     transition: ease-in-out 0.2s;

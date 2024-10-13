@@ -5,10 +5,10 @@ interface LogoProps {
     className?: string;
 }
 
-const Logo: React.FC = () => {
+const Logo: React.FC<LogoProps> = (className) => {
     return (
     <div>
-    <img className="w-14 mx-4" src={logo} alt="" sizes="" />
+    <img className={`${className} w-14 mx-4`} src={logo} alt="" sizes="" />
     </div>
 )}
 
