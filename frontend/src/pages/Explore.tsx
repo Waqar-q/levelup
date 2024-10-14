@@ -10,6 +10,7 @@ import Input from "../components/Input_Field";
 import Loader from "../components/Loader";
 import Dialog from "../components/Dialog";
 import Radio from "../components/Radio";
+import BottomMenu from "../components/Bottom_Menu";
 
 const Explore: React.FC = () => {
   const [loading, setLoader] = useState(true);
@@ -72,7 +73,10 @@ const Explore: React.FC = () => {
         <Input fieldType="radio" />
         <Input fieldType="range" />
         <Input fieldType="hidden" />
+
+        
       </section>
+      <BottomMenu/>
     </div>
   );
 };

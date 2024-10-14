@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 
 const Header: React.FC = () => {
     return (
-        <section className="header grid grid-cols-[20%_60%_20%] items-center justify-center h-16">
+        <section className="header grid grid-cols-[20%_60%_20%] items-center justify-center h-16 sticky">
             <Sidebar className="justify-self-start"/>
             <Logo className="justify-self-center"/>
             <ul className="justify-self-end mx-6">
