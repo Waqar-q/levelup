@@ -13,10 +13,12 @@ import Radio from "../components/Radio";
 import BottomMenu from "../components/Bottom_Menu";
 
 const Explore: React.FC = () => {
-  const [loading, setLoader] = useState(true);
+  const [loading, setLoader] = useState(false);
 
   useEffect(() => {
-    window.onload = () => setLoader(false);
+    console.log('in use effect')
+    setLoader(true)
+    setTimeout(() => setLoader(false), 1500);
   }, []);
 
   if (loading) {
@@ -26,7 +28,7 @@ const Explore: React.FC = () => {
   return (
     <div className="explore">
       <Header />
-      
+  
       <section className="explore-body p-5">
         <p>Explore</p>
         <Dialog>

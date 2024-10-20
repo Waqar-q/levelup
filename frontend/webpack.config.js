@@ -2,12 +2,24 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const webpack = require('webpack');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const envVariables = Object.keys(process.env).reduce((acc, key) => {
+  if (key.startsWith('REACT_APP_')) {
+    acc[key] = JSON.stringify(process.env[key]);
+  }
+  return acc;
+}, {});
 
 module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].[contenthash].js',
+    publicPath: '/',
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -22,8 +34,8 @@ module.exports = {
             options: {
               presets: [
                 '@babel/preset-env',
-                '@babel/preset-react',  // For JSX/React code
-                '@babel/preset-typescript'  // For TypeScript
+                '@babel/preset-react',  
+                '@babel/preset-typescript'  
               ],
             },
           },
@@ -38,7 +50,7 @@ module.exports = {
         test: /\.(png|jpe?g|gif|svg)$/i,
         type: 'asset/resource',
         generator: {
-          filename: 'assets/[name][ext]', // or any structure you prefer
+          filename: 'assets/[name][ext]', 
         }
       },
   ]
@@ -48,15 +60,25 @@ module.exports = {
       template: './public/index.html',
     }),
     new MiniCssExtractPlugin({
-      filename: 'styles.css', // Name of the output CSS file
+      filename: 'styles.css', 
       chunkFilename: '[id].css',
+    }),
+    new webpack.DefinePlugin({
+      'process.env': envVariables, 
     }),
   ],
   devServer: {
     static: path.join(__dirname, 'dist'),
     compress: true,
     port: 3000,
-  },
+    historyApiFallback: true,
+    proxy: [
+      {
+        context: ['/api'],
+        target: 'http://localhost:8000/',
+      }
+  ],
+},
   optimization: {
     splitChunks: {
       cacheGroups: {

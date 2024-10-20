@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
       <section
         className={`${
           opened ? "open" : "close"
-        } bg-accent text-light absolute top-0 w-[70%] h-full max-w-[500px] -translate-x-[80%]`}
+        } bg-accent text-light absolute left-0 top-0 w-[70%] h-full max-w-[500px] -translate-x-[80%]`}
       >
         <div className="flex justify-between items-center p-5">
           <Logo />

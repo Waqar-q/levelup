@@ -53,7 +53,7 @@ input{
 }
 
 .loader .loader-bg{
-    background: linear-gradient(to right, lightgrey , rgb(182, 181, 181), lightgrey );
+    background: linear-gradient(to right, lightgrey , rgb(255, 255, 255), lightgrey );
     animation: shine 2.5s linear infinite;
 }
 
