@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,14 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r66_hkrw+151lvdtjfssz=xdxh48jk!k+s-_wx$^ftz6!sp)*@'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
-
+SECRET_KEY= config('SECRET_KEY')
 
 # Application definition
 
@@ -135,12 +134,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
 
+ALLOWED_HOSTS = ['localhost']   
+
 CORS_ALLOWED_ORIGINS = [
      "http://localhost:3000",
+     "https://6565-2402-3a80-1aa6-75bc-9d12-62c3-a448-111f.ngrok-free.app",
  ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
+    'https://6565-2402-3a80-1aa6-75bc-9d12-62c3-a448-111f.ngrok-free.app',
 ]
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+CORS_ALLOW_CREDENTIALS = True
+
+GOOGLE_OAUTH2_CLIENT_ID = config('GOOGLE_OAUTH2_CLIENT_ID')
+GOOGLE_OAUTH2_CLIENT_SECRET = config('GOOGLE_OAUTH2_CLIENT_SECRET')
+FACEBOOK_APP_ID= config('FACEBOOK_APP_ID')
+FACEBOOK_APP_SECRET=config('FACEBOOK_APP_SECRET')

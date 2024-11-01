@@ -60,7 +60,7 @@ module.exports = {
       template: './public/index.html',
     }),
     new MiniCssExtractPlugin({
-      filename: 'styles.css', 
+      filename: '[name].css', 
       chunkFilename: '[id].css',
     }),
     new webpack.DefinePlugin({
@@ -68,6 +68,7 @@ module.exports = {
     }),
   ],
   devServer: {
+    allowedHosts: 'all',
     static: path.join(__dirname, 'dist'),
     compress: true,
     port: 3000,
