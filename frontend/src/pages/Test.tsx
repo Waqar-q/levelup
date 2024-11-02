@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import testImage from "../assets/Web-Development-Course-Thumbnail.jpg";
@@ -14,9 +14,11 @@ import BottomMenu from "../components/Bottom_Menu";
 
 const Explore: React.FC = () => {
   const [loading, setLoader] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
-    console.log('in use effect')
+    navigate('/explore');
     setLoader(true)
     setTimeout(() => setLoader(false), 1500);
   }, []);
@@ -25,17 +27,22 @@ const Explore: React.FC = () => {
     return <Loader />;
   }
 
-  return (
+  if (localStorage.getItem('logged') == 'true'){
+    
+  return (  
     <div className="explore min-h-[100vh] relative">
       <Header />
   
       <section className="explore-body p-5">
-        <p>Hello, {localStorage.getItem('fullName')}</p>
+        <p className="font-semibold text-2xl">Hello, {localStorage.getItem('firstName')}</p>
         
       </section>
       <BottomMenu/>
     </div>
   );
-};
-
+} else{
+  navigate('/login');
+  return null;
+}
+}
 export default Explore;

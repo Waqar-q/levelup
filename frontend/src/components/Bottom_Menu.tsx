@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const BottomMenu: React.FC = () => {
     return (
@@ -8,7 +9,7 @@ const BottomMenu: React.FC = () => {
                 <a href="#notifications"><i className="material-icons-outlined px-4 text-3xl">notifications</i></a>
             </li>
             <li key="profile" className="px-2 py-5 hover:text-secondary_light text-2xl font-semibold">
-                <a href="#profile"><i className="material-icons-outlined px-4 text-3xl">person</i></a>
+                <Link to="/profile"><i className="material-icons-outlined px-4 text-3xl">person</i></Link>
             </li>
             <li key="explore" className="px-2 py-5 hover:text-secondary_light text-2xl font-semibold">
                 <a href="#explore"><i className="material-icons-outlined px-4 text-3xl">public</i></a>
@@ -17,7 +18,7 @@ const BottomMenu: React.FC = () => {
                 <a href="#my-courses"><i className="material-icons-outlined px-4 text-3xl">book</i></a>
             </li>
             <li key="settings" className="px-2 py-5 hover:text-secondary_light text-2xl font-semibold">
-                <a href="#settings"><i className="material-icons-outlined px-4 text-3xl">settings</i></a>
+            <Link to="/settings"><i className="material-icons-outlined px-4 text-3xl">settings</i></Link>
             </li>
             </ul>
         </section>

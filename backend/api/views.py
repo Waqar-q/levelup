@@ -35,7 +35,7 @@ def login_check(request):
 
 @api_view(['POST'])    
 def google_login_check(request):
-    token = request.data.get['token']
+    token = request.data.get('token')
     
     try:
         idinfo = id_token.verify_oauth2_token(token,google_requests.Request(),GOOGLE_OAUTH2_CLIENT_ID)
@@ -48,7 +48,10 @@ def google_login_check(request):
         return Response({
             'message': "Login Successful",
             'login status': "true",
-            'user': user
+            'firstName': user_name,
+            'fullName': user_name,
+            'email': user_email,
+
         })
         
     except ValueError:

@@ -80,3 +80,15 @@ input{
     display: none;
     
 }
+
+.settings ul li{
+    @apply flex px-5 h-16 items-center hover:text-light hover:bg-accent_light;
+}
+
+.settings ul li i{
+    @apply mx-3;
+}
+
+.settings ul>p{
+    @apply bg-gray-100 px-5 text-sm text-gray-400;
+}

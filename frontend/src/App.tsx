@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import DeleteData from "./pages/Delete-data";
+import Settings from "./pages/Settings";
 
 declare global{
     interface Window{
@@ -15,6 +16,7 @@ declare global{
   }
 
 const App: React.FC = () => {
+
     useEffect(() => {
         try {
                 window.FB.init({
@@ -33,11 +35,12 @@ const App: React.FC = () => {
         <Router>
             <Routes>
                 <Route path="/" element={<Explore/>}/>
+                <Route path="/explore" element={<Explore/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/privacy" element={<Privacy/>}/>
                 <Route path="/terms" element={<Terms/>}/>
                 <Route path="/delete-data" element={<DeleteData/>}/>
-
+                <Route path="/settings" element={<Settings/>}/>
             </Routes>
         </Router>
     )

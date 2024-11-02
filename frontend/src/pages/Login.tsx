@@ -14,7 +14,13 @@ const Login: React.FC = () => {
   const csrftoken = getCookie("csrftoken");
   const navigate = useNavigate();
 
-  const [fullName, setFullName] = useState(null);
+  const [user, setUser] = useState({
+    'firstName': '',
+    'lastName': '',
+    'fullName': '',
+    'email': '',
+    'logged': false,
+  });
 
   const [formData, setFormData] = useState({
     email: "",
@@ -51,12 +57,22 @@ const Login: React.FC = () => {
         const data = await response.json();
         console.log(data);
         if (data["message"] === "Successful") {
-          localStorage.setItem('logged', 'true');
+
           toast.success("You have been successfully logged in.")
+          setUser({
+            ...user,
+            'firstName': data['firstName'],
+            'lastName': data['lastName'],
+            'fullName': data['fullName'],
+            'logged': true,
+          });
+          
+          localStorage.setItem('logged', 'true');
           localStorage.setItem('firstName', data['firstName']);
           localStorage.setItem('lastName', data['lastName']);
-          setFullName(data['firstName']+data['lastName']);
-          (fullName == null) ? '' :localStorage.setItem('fullName', fullName) ;
+          localStorage.setItem('fullName', data['fullName']);
+
+          
           setTimeout(() => navigate("/"),500);
         }
         else{
@@ -89,8 +105,20 @@ const handleGoogleLoginSuccess = async (credentialResponse: any) => {
     if(!response.ok){throw console.error("Response is not OK");
     }
     else if (data['login status'] === 'true'){
-      console.log(data);
-      redirect('/');
+      toast.success("You have been successfully logged in.")
+          setUser({
+            ...user,
+            'email': data['email'],
+            'fullName': data['fullName'],
+            'logged': true,
+          });
+          
+          localStorage.setItem('logged', 'true');
+          localStorage.setItem('email', data['email']);
+          localStorage.setItem('fullName', data['fullName']);
+
+          
+          setTimeout(() => navigate("/"),500);
     }
   }
   catch(error){
