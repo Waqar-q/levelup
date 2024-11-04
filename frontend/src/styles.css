@@ -81,14 +81,18 @@ input{
     
 }
 
-.settings ul li{
+.settings>.profile-settings li{
     @apply flex px-5 h-16 items-center hover:text-light hover:bg-accent_light;
 }
 
-.settings ul li i{
+.settings>.profile-settings li i{
     @apply mx-3;
 }
 
-.settings ul>p{
+.settings>.profile-settings>p{
     @apply bg-gray-100 px-5 text-sm text-gray-400;
+}
+
+.profile form *{
+    @apply my-5;
 }

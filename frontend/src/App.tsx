@@ -7,6 +7,8 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import DeleteData from "./pages/Delete-data";
 import Settings from "./pages/Settings";
+import Notifications from "./pages/Notifications";
+import Profile from "./pages/Profile";
 
 declare global{
     interface Window{
@@ -41,6 +43,10 @@ const App: React.FC = () => {
                 <Route path="/terms" element={<Terms/>}/>
                 <Route path="/delete-data" element={<DeleteData/>}/>
                 <Route path="/settings" element={<Settings/>}/>
+                <Route path="/notifications" element={<Notifications/>}/>
+                <Route path="/profile" element={<Profile/>}/>
+
+
             </Routes>
         </Router>
     )

@@ -15,10 +15,14 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState({
+    'id': '',
     'firstName': '',
     'lastName': '',
     'fullName': '',
     'email': '',
+    'age': '',
+    'gender': '',
+    'phone': '',
     'logged': false,
   });
 
@@ -61,19 +65,27 @@ const Login: React.FC = () => {
           toast.success("You have been successfully logged in.")
           setUser({
             ...user,
+            'id': data['user_id'],
             'firstName': data['firstName'],
             'lastName': data['lastName'],
             'fullName': data['fullName'],
+            'email': data['email'],
+            'age': data['age'],
+            'gender': data['gender'],
+            'phone': data['phone'],
             'logged': true,
           });
           
           localStorage.setItem('logged', 'true');
+          localStorage.setItem('user_id', data['user_id']);
           localStorage.setItem('firstName', data['firstName']);
           localStorage.setItem('lastName', data['lastName']);
           localStorage.setItem('fullName', data['fullName']);
-
-          
-          setTimeout(() => navigate("/"),500);
+          localStorage.setItem('email', data['email']);
+          localStorage.setItem('age', data['age']);
+          localStorage.setItem('gender', data['gender']);
+          localStorage.setItem('phone', data['phone']);          
+          setTimeout(() => navigate(-1),500);
         }
         else{
           localStorage.setItem('logged', 'false');
@@ -118,7 +130,7 @@ const handleGoogleLoginSuccess = async (credentialResponse: any) => {
           localStorage.setItem('fullName', data['fullName']);
 
           
-          setTimeout(() => navigate("/"),500);
+          setTimeout(() => navigate(-1),500);
     }
   }
   catch(error){
@@ -155,7 +167,7 @@ const handleFacebookLogin = async () => {
           else{
             const data = await backend_response.json()
             console.log(data)
-            navigate('/');
+            navigate(-1);
           }
         }
         catch(error){

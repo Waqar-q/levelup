@@ -3,7 +3,12 @@ import Logo from "./Logo";
 import Sidebar from "./Sidebar";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const Header: React.FC = () => {
+interface HeaderProps{
+    page?:string}
+
+
+
+const Header: React.FC<HeaderProps> = ({page}) => {
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -13,7 +18,7 @@ const Header: React.FC = () => {
     const hideBackButton = pathWithoutBackButton.includes(location.pathname);
 
     return (
-        <section className="header grid grid-cols-[20%_60%_20%] items-center justify-center h-16">
+        <section className="header grid grid-cols-[20%_60%_20%] items-center justify-center h-16 border-b border-gray-200">
             { hideBackButton ?( 
                 <>
             <Sidebar className="justify-self-start"/>
@@ -25,7 +30,8 @@ const Header: React.FC = () => {
              ) : (
             <>
             <a onClick={() => navigate(-1)}><i className="material-icons px-5 text-3xl">arrow_back</i></a>
-            <p className="text-2xl">Settings</p>
+            <p className="text-2xl">{page}</p>
+            <div></div>
             </>)
             }
         </section>

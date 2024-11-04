@@ -22,7 +22,7 @@ const Settings: React.FC = () => {
     
   return (        
       <section className="settings">
-        <Header/>
+        <Header page='Settings'/>
         <div className='profile-picture-edit flex flex-col justify-center items-center p-5'>
         <img className="w-28" src={defaultDp} alt="Display Picture" sizes="" />
         <p className="my-5">Change Profile Picture</p>
@@ -182,9 +182,9 @@ const Settings: React.FC = () => {
             <p>Personalization</p>
         </li>
     </Link>
-
+    
 </ul>
-     
+<BottomMenu/>
       </section>
   );
 } else{

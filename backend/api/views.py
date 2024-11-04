@@ -29,7 +29,16 @@ def login_check(request):
 
 
     if (user is not None):
-        return Response({'message':"Successful", 'firstName': user.first_name, 'lastName': user.last_name})
+        return Response({
+            'message':"Successful", 
+            'firstName': user.first_name, 
+            'lastName': user.last_name, 
+            'user_id': user.id, 
+            'email': user.email,
+            'age' : user.age,
+            'gender': user.gender,
+            'phone': user.phone,
+            })
     else :
         return Response({'message':"Not Successful"})
 

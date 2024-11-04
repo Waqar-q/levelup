@@ -19,9 +19,13 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email,password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField('Email',max_length=50,primary_key=True)
+    id = models.AutoField('Id', primary_key=True)
+    email = models.EmailField('Email',max_length=50, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
+    age = models.IntegerField('Age')
+    gender = models.CharField('Gender',max_length=1,choices=[('O', 'Other'), ('M','Male'), ('F', 'Female')], default='M')
+    phone = models.PositiveIntegerField("Phone", null=True, blank=True, unique=True)
     role = models.CharField('Role', max_length=20, choices=(('student','Student'),('instructor', 'Instructor')), default='student')
     profile_picture = models.ImageField('Profile Picture',upload_to='profile pics/', blank=True, null=True)
     date_joined = models.DateTimeField('Date Joined', auto_now_add=True)
