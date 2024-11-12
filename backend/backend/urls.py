@@ -26,9 +26,6 @@ from api.views import homepage
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(api.urls)),
-    path('', TemplateView.as_view(template_name='index.html')),
-    path('<path:path>/', TemplateView.as_view(template_name='index.html')), 
-
 ]
 
 if settings.DEBUG:

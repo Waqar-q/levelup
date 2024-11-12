@@ -33,6 +33,7 @@ SECRET_KEY= config('SECRET_KEY')
 INSTALLED_APPS = [
     'api',
     'rest_framework',
+    'import_export',
     'corsheaders',
     'django_extensions',
     'django.contrib.admin',

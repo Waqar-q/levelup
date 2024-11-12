@@ -51,16 +51,22 @@ def google_login_check(request):
 
         user_email = idinfo['email']
         user_name = idinfo['name']
+        first_name = user_name.split(' ')[0]
+        last_name = user_name.split(' ')[-1]
 
-        user = User.objects.get_or_create(email = user_email, defaults={'name':user_name})
 
+        user, created = User.objects.get_or_create(email = user_email, defaults={'name':user_name})
+        
         return Response({
             'message': "Login Successful",
             'login status': "true",
-            'firstName': user_name,
-            'fullName': user_name,
+            'user_id': user.id,
+            'firstName': first_name,
+            'lastName': last_name,
             'email': user_email,
-
+            'gender': user.gender,
+            'age': user.age,
+            'phone': user.phone,
         })
         
     except ValueError:
