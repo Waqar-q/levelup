@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({page}) => {
     const hideBackButton = pathWithoutBackButton.includes(location.pathname);
 
     return (
-        <section className="header grid grid-cols-[20%_60%_20%] items-center justify-center h-16 border-b border-gray-200">
+        <header className="header grid grid-cols-[20%_60%_20%] fixed right-0 left-0 items-center justify-center h-16 border-b bg-light border-gray-200">
             { hideBackButton ?( 
                 <>
             <Sidebar className="justify-self-start"/>
@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({page}) => {
             <div></div>
             </>)
             }
-        </section>
+        </header>
     )
 }
 

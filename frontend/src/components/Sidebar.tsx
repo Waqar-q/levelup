@@ -19,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
   };
 
   return (
-    <div className="sidebar z-[9999] inset-0">
+    <div className="sidebar  inset-0">
       <a onClick={toggleSidebar}>
         <i className="fas fa-bars text-3xl mx-5"></i>
       </a>
@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
       <section
         className={`${
           opened ? "open" : "close"
-        } bg-accent text-light absolute left-0 top-0 w-[70%] h-full max-w-[500px] -translate-x-[80%]`}
+        } bg-accent text-light absolute left-0 top-0 w-[70%] h-[100vh] max-w-[500px] z-[999] -translate-x-[80%]`}
       >
         <div className="flex justify-between items-center p-5">
           <Logo />
@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-home px-5"></i>
-            <a href="#Home">Home</a>
+            <Link to={'/explore'}>Home</Link>
           </li>
 
           <li
@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-book px-5"></i>
-            <a href="#MyCourses">My Courses</a>
+            <Link to={'/my-courses'}>My Courses</Link>
           </li>
 
           <li
@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-medal px-5"></i>
-            <a href="#MyBadges">My Badges</a>
+            <Link to={'/badges'}>My Badges</Link>
           </li>
 
           <li
@@ -66,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-chart-line px-5"></i>
-            <a href="#MyResults">My Results</a>
+            <Link to={'/results'}>My Results</Link>
           </li>
 
           <li
@@ -74,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-bell px-5"></i>
-            <a href="#Notifications">Notifications</a>
+            <Link to={'/notifications'}>Notifications</Link>
           </li>
 
           <li
@@ -82,7 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-user px-5"></i>
-            <a href="#MyProfile">My Profile</a>
+            <Link to={'/profile'}>Profile</Link>
           </li>
 
           <li
@@ -90,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-trophy px-5"></i>
-            <a href="#Leaderboard">Leaderboard</a>
+            <Link to={'/leaderboard'}>Leaderboard</Link>
           </li>
 
           <li
@@ -98,7 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-cog px-5"></i>
-            <a href="#Settings">Settings</a>
+            <Link to={'/settings'}>Settings</Link>
           </li>
         
           <li
@@ -106,7 +106,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
             className="px-7 py-5 hover:bg-accent_light text-2xl font-semibold"
           >
             <i className="fas fa-headset px-5"></i>
-            <a href="#Support">Support</a>
+            <Link to={'/support'}>Support</Link>
           </li>
         </ul>
       </section>

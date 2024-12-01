@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import User, Course, CourseCategory, CourseSubcategory, CourseModule, Lecture, Document, Review
 from import_export.admin import ImportExportModelAdmin
+from .models import User, Course, CourseCategory, CourseSubcategory, CourseModule, Lecture, Document, Review
+from .resources import CourseResource
 
 @admin.register(User)
 class CourseCategoryAdmin(ImportExportModelAdmin):
@@ -8,7 +9,7 @@ class CourseCategoryAdmin(ImportExportModelAdmin):
 
 @admin.register(Course)
 class CourseAdmin(ImportExportModelAdmin):
-    pass
+    resource_class = CourseResource
 
 @admin.register(CourseCategory)
 class CourseCategoryAdmin(ImportExportModelAdmin):

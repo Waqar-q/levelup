@@ -68,17 +68,25 @@ input{
 
 }
 
-.dialog-bg.open {
+.card{
+    @apply p-6 shadow-md shadow-accent_light rounded-2xl flex flex-col items-center min-w-80 max-w-96 h-min
+    border;
+}
+
+.box{
+    @apply p-6 shadow-md shadow-accent_light rounded-2xl flex flex-col items-center min-w-36 max-w-96 h-min
+    border;
+}
+
+.dialog::backdrop{
     backdrop-filter: blur(10px);
     background-color: rgba(255, 255, 255, 0.5);
     z-index: 1000;
 }
 
-.dialog-bg.close {
-    backdrop-filter: blur(0px);
-    background-color: transparent;
-    display: none;
-    
+.dialog{
+    @apply flex-col justify-center p-6 bg-light shadow-md shadow-accent_light relative 
+    left-[50%] top-[1/2] -translate-x-[50%] -translate-y-[50%] rounded-2xl w-2/3 max-w-96;
 }
 
 .settings>.profile-settings li{
@@ -96,3 +104,46 @@ input{
 .profile form *{
     @apply my-5;
 }
+
+
+
+/* Explore Page Style*/
+
+.explore-body>div{
+    background-image: linear-gradient(to top,white 5%, lightblue, white 50%);
+}
+
+.explore-heading-wrapper{
+    @apply items-center flex w-full justify-between px-5;
+}
+
+.explore-heading-wrapper .explore-heading{
+    @apply flex items-center ;
+}
+
+.explore-heading-wrapper .explore-heading .explore-heading-text{
+    @apply py-3;
+}
+
+.explore-heading-wrapper .explore-heading i{
+    font-size: large;
+    margin: 8px;
+}
+
+.explore-heading-wrapper a{
+    @apply text-gray-500;
+}
+
+.explore-body>div>.slider{
+    
+    scrollbar-width: none;
+    @apply flex gap-4 overflow-scroll p-5 ; 
+}
+
+.explore-body>div>.slider::-webkit-scrollbar {
+    display: none;
+  }
+
+  .explore-body>div>.slider .card, .explore-body>div>.slider .box{
+    @apply bg-white;
+  }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Card from "../components/Card";
@@ -16,6 +16,30 @@ import defaultDp from "../assets/default_dp.jpg";
 const Settings: React.FC = () => {
   
   const navigate = useNavigate();
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const toggleLogoutDialog = () => {
+    console.log("toggleLogoutDialog")
+    if (dialogRef.current?.open){
+        console.log('open')
+        dialogRef.current?.close();}
+
+    else {
+        dialogRef.current?.showModal()};
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('logged');
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('lastName');
+    localStorage.removeItem('age');
+    localStorage.removeItem('gender');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phone');
+    navigate('/login');
+
+  }
   
 
   if (localStorage.getItem('logged') == 'true'){
@@ -23,7 +47,8 @@ const Settings: React.FC = () => {
   return (        
       <section className="settings">
         <Header page='Settings'/>
-        <div className='profile-picture-edit flex flex-col justify-center items-center p-5'>
+
+        <div className='profile-picture-edit flex flex-col justify-center items-center p-5 pt-16'>
         <img className="w-28" src={defaultDp} alt="Display Picture" sizes="" />
         <p className="my-5">Change Profile Picture</p>
         </div>
@@ -45,12 +70,20 @@ const Settings: React.FC = () => {
         </li>
     </Link>
 
-    <Link to={'/logout'}>
-        <li className="setting-item">
+    <a href='#' onClick={(e) => { e.preventDefault(); toggleLogoutDialog(); }}>
+       <li className="setting-item">
             <i className="material-icons-outlined">exit_to_app</i>
             <p>Logout</p>
+            
         </li>
-    </Link>
+    </a> 
+    <dialog className="dialog logout-dialog z-[99999]" ref={dialogRef}>
+                <p className="my-5 text-center">Are you sure you want to log out?</p>
+                <div className="flex w-full">
+                    <button type="button" onClick={toggleLogoutDialog}>Cancel</button>
+                    <button onClick={handleLogout}>Logout</button>
+                    </div>
+            </dialog>
 
     <p className="profile-settings-heading">Display and Appearance</p>
 

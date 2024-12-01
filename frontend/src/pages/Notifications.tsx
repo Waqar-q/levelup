@@ -23,7 +23,7 @@ const Notifications: React.FC = () => {
   return (        
       <section className="notifications">
         <Header page='Notifications'/>
-        <ul className="notifications-list">
+        <ul className="notifications-list pt-16">
             <Link to=''><li className="grid grid-cols-[80%_20%] min-h-20 items-center px-5 border-b border-gray-500 cursor-pointer">
                 <p className="">This is a notification</p>
                 <p className="text-gray-400 text-sm">11:24pm</p>

@@ -2,10 +2,11 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from django.contrib.auth import authenticate
-from .models import User
-from .serializers import UserSerializer
+from .models import User, Course, CourseCategory, CourseSubcategory, CourseModule, Lecture, Document, Review
+from .serializers import UserSerializer, CourseSerializer, CourseCategorySerializer, CourseSubcategorySerializer, CourseModuleSerializer, LectureSerializer, DocumentSerializer, ReviewSerializer
+from .utilities import LimitPagination, PagePagination
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import requests 
@@ -97,4 +98,40 @@ def facebook_login_check(request):
 
     
     return Response({'email': user_email, 'name': user_name, 'picture':picture_url})
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+    pagination_class = PagePagination
+
+
+class CourseCategoryViewSet(viewsets.ModelViewSet):
+    queryset = CourseCategory.objects.all()
+    serializer_class = CourseCategorySerializer
+    pagination_class = LimitPagination
+
+class CourseSubcategoryViewSet(viewsets.ModelViewSet):
+    queryset = CourseSubcategory.objects.all()
+    serializer_class = CourseSubcategorySerializer
+    pagination_class = LimitPagination
+
+class CourseModuleViewSet(viewsets.ModelViewSet):
+    queryset = CourseModule.objects.all()
+    serializer_class = CourseModuleSerializer
+    pagination_class = LimitPagination
+
+class LectureViewSet(viewsets.ModelViewSet):
+    queryset = Lecture.objects.all()
+    serializer_class = LectureSerializer
+    pagination_class = LimitPagination
+
+class DocumentViewSet(viewsets.ModelViewSet):
+    queryset = Document.objects.all()
+    serializer_class = DocumentSerializer
+    pagination_class = LimitPagination
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    pagination_class = LimitPagination
 

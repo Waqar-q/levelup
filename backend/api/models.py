@@ -51,7 +51,7 @@ class Course(models.Model):
     description = models.TextField("Description", max_length=2000)
     requirements = models.TextField("Requirements", max_length=1000)
     duration = models.DecimalField("Duration in Hrs", decimal_places=1, max_digits=4)
-    date_of_creation = models.DateField("Creation Date", auto_now_add=True)
+    date_of_creation = models.DateField("Creation Date", auto_now_add=True, blank=True, null=True)
     thumbnail = models.ImageField("Thumbnail",upload_to="course_thumbnails/", blank=True, null=True)
     price = models.IntegerField("Price", blank=False, null=False)
 
@@ -97,6 +97,10 @@ class Course(models.Model):
 
     language = models.CharField("Language",max_length=2, choices = LanguageChoices.choices)
     category = models.ForeignKey(to="CourseCategory", on_delete=models.SET_NULL, related_name='courses', null=True)
+    subcategory = models.ForeignKey(to="CourseSubcategory", on_delete=models.SET_NULL, related_name='courses', null=True)
+
+    def __str__(self):
+        return self.course_name
 
 class CourseCategory(models.Model):
     id = models.AutoField("Course Category ID", primary_key=True)
@@ -111,7 +115,7 @@ class CourseSubcategory(models.Model):
     id = models.AutoField("Course Subcategory ID", primary_key=True)
     subcategory_name = models.CharField("Course Subcategory Name", blank=False, max_length=50)
     description = models.TextField("Category Description", max_length=500)
-    image = models.ImageField("Subcategory Image", upload_to="subcategory_images/", null=False)
+    image = models.ImageField("Subcategory Image", upload_to="subcategory_images/", null=True, blank=True)
     category = models.ForeignKey(CourseCategory, on_delete=models.CASCADE)
 
     def __str__(self):

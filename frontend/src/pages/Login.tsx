@@ -80,7 +80,6 @@ const Login: React.FC = () => {
           localStorage.setItem('user_id', data['user_id']);
           localStorage.setItem('firstName', data['firstName']);
           localStorage.setItem('lastName', data['lastName']);
-          localStorage.setItem('fullName', data['fullName']);
           localStorage.setItem('email', data['email']);
           localStorage.setItem('age', data['age']);
           localStorage.setItem('gender', data['gender']);
@@ -120,15 +119,24 @@ const handleGoogleLoginSuccess = async (credentialResponse: any) => {
       toast.success("You have been successfully logged in.")
           setUser({
             ...user,
+            'id': data['user_id'],
             'email': data['email'],
-            'fullName': data['fullName'],
+            'firstName': data['firstName'],
+            'lastName': data['lastName'],
+            'gender': data['gender'],
+            'age': data['age'],
+            'phone': data['phone'],
             'logged': true,
           });
           
           localStorage.setItem('logged', 'true');
+          localStorage.setItem('user_id', data['user_id']);
           localStorage.setItem('email', data['email']);
-          localStorage.setItem('fullName', data['fullName']);
-
+          localStorage.setItem('firstName', data['firstName']);
+          localStorage.setItem('lastName', data['lastName']);
+          localStorage.setItem('gender', data['gender']);
+          localStorage.setItem('age', data['age']);
+          localStorage.setItem('phone', data['phone']);
           
           setTimeout(() => navigate(-1),500);
     }
