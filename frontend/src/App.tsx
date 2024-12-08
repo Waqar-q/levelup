@@ -9,6 +9,9 @@ import DeleteData from "./pages/Delete-data";
 import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
+import CoursePage from "./pages/Course";
+import Signup from "./pages/Sign Up";
+import Role from "./pages/Role";
 
 declare global{
     interface Window{
@@ -39,12 +42,16 @@ const App: React.FC = () => {
                 <Route path="/" element={<Explore/>}/>
                 <Route path="/explore" element={<Explore/>}/>
                 <Route path="/login" element={<Login/>}/>
+                <Route path="/signup" element={<Signup/>}/>
+                <Route path="/role" element={<Role/>}/>
                 <Route path="/privacy" element={<Privacy/>}/>
                 <Route path="/terms" element={<Terms/>}/>
                 <Route path="/delete-data" element={<DeleteData/>}/>
                 <Route path="/settings" element={<Settings/>}/>
                 <Route path="/notifications" element={<Notifications/>}/>
                 <Route path="/profile" element={<Profile/>}/>
+                <Route path="/course/:id" element={<CoursePage/>}/>
+
 
 
             </Routes>

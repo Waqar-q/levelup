@@ -19,7 +19,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
   };
 
   return (
-    <div className="sidebar  inset-0">
+    <div className="sidebar inset-0">
       <a onClick={toggleSidebar}>
         <i className="fas fa-bars text-3xl mx-5"></i>
       </a>
@@ -27,7 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
       <section
         className={`${
           opened ? "open" : "close"
-        } bg-accent text-light absolute left-0 top-0 w-[70%] h-[100vh] max-w-[500px] z-[999] -translate-x-[80%]`}
+        } bg-accent text-light absolute left-0 top-0 w-[70%] h-[100vh] max-w-[500px] -translate-x-[80%]`}
       >
         <div className="flex justify-between items-center p-5">
           <Logo />

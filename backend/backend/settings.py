@@ -134,16 +134,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
+FULL_MEDIA_URL = 'http://localhost:8000/media/'
 
-ALLOWED_HOSTS = ['localhost']   
+ALLOWED_HOSTS = [
+    "localhost"]   
 
 CORS_ALLOWED_ORIGINS = [
      "http://localhost:3000",
+     "http://localhost:8000",
      "https://6565-2402-3a80-1aa6-75bc-9d12-62c3-a448-111f.ngrok-free.app",
  ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
+    "http://localhost:8000",
     'https://6565-2402-3a80-1aa6-75bc-9d12-62c3-a448-111f.ngrok-free.app',
 ]
 
@@ -155,7 +159,3 @@ GOOGLE_OAUTH2_CLIENT_SECRET = config('GOOGLE_OAUTH2_CLIENT_SECRET')
 FACEBOOK_APP_ID= config('FACEBOOK_APP_ID')
 FACEBOOK_APP_SECRET=config('FACEBOOK_APP_SECRET')
 
-REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10, 
-}

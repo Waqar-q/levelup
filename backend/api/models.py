@@ -47,12 +47,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 class Course(models.Model):
     id = models.UUIDField("Course ID",primary_key=True, default=uuid.uuid4, editable=False)
     course_name = models.CharField("Course Name", blank=False, max_length=200)
+    instructor = models.ForeignKey(User, related_name="instructor", on_delete=models.DO_NOTHING, null=True, blank=False)
     tag_line = models.TextField("Tag Line", blank=False, max_length=200)
     description = models.TextField("Description", max_length=2000)
     requirements = models.TextField("Requirements", max_length=1000)
     duration = models.DecimalField("Duration in Hrs", decimal_places=1, max_digits=4)
     date_of_creation = models.DateField("Creation Date", auto_now_add=True, blank=True, null=True)
-    thumbnail = models.ImageField("Thumbnail",upload_to="course_thumbnails/", blank=True, null=True)
+    thumbnail = models.ImageField("Thumbnail",upload_to="course_thumbnails/", blank=True, null=True, default="course_thumbnails/default-course.png")
     price = models.IntegerField("Price", blank=False, null=False)
 
     class LanguageChoices(models.TextChoices):
@@ -98,9 +99,10 @@ class Course(models.Model):
     language = models.CharField("Language",max_length=2, choices = LanguageChoices.choices)
     category = models.ForeignKey(to="CourseCategory", on_delete=models.SET_NULL, related_name='courses', null=True)
     subcategory = models.ForeignKey(to="CourseSubcategory", on_delete=models.SET_NULL, related_name='courses', null=True)
+    views = models.IntegerField("Views", default=0)
 
     def __str__(self):
-        return self.course_name
+        return self.course_name 
 
 class CourseCategory(models.Model):
     id = models.AutoField("Course Category ID", primary_key=True)
@@ -164,3 +166,12 @@ class Review(models.Model):
 
     def __str__(self):
         return self.reviewer_name
+    
+class View(models.Model):
+    id = models.UUIDField("View ID",primary_key=True, default=uuid.uuid4, editable=False)
+    viewer = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='viewer')
+    timestamp = models.DateTimeField(auto_now=True)
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, related_name='course')
+
+    def __str__(self):
+        return f"{self.viewer} {self.course}"

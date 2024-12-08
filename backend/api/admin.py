@@ -1,6 +1,6 @@
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import User, Course, CourseCategory, CourseSubcategory, CourseModule, Lecture, Document, Review
+from .models import User, Course, CourseCategory, CourseSubcategory, CourseModule, Lecture, Document, Review, View
 from .resources import CourseResource
 
 @admin.register(User)
@@ -33,4 +33,8 @@ class DocumentAdmin(ImportExportModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(ImportExportModelAdmin):
+    pass
+
+@admin.register(View)
+class ViewAdmin(ImportExportModelAdmin):
     pass

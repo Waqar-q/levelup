@@ -3,7 +3,7 @@ import Loader from "../components/Loader";
 import Input from "../components/Input_Field";
 import googleLogo from "../assets/Google-G-logo.png";
 import facebookLogo from "../assets/facebook-logo.png";
-import { Form, Navigate, redirect, useNavigate } from "react-router-dom";
+import { Form, Link, Navigate, redirect, useNavigate } from "react-router-dom";
 import getCookie from "../utilities/getCookie";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -86,9 +86,10 @@ const Login: React.FC = () => {
           localStorage.setItem('phone', data['phone']);          
           setTimeout(() => navigate(-1),500);
         }
-        else{
+        else if (data["redirect"] === "signup"){
           localStorage.setItem('logged', 'false');
-          toast.error("Something went wrong.");
+          toast.error(data["message"]);
+          navigate("/signup")
         }
       }
     } catch (error) {
@@ -228,7 +229,7 @@ const handleFacebookLogin = async () => {
       </form>
       <hr />
         <div className="social-login flex flex-col items-center w-full">
-          <p className="my-4">Other ways to login</p>
+          <p className="my-4">Other ways to login or <Link className="underline" to='/signup'>signup</Link></p>
           <div className="flex justify-center w-full">
             <button type="button" className="w-1/2 flex justify-center" onClick={handleFacebookLogin}>
               <img src={facebookLogo} className="w-6" alt="Facebook Logo" />

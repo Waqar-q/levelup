@@ -1,11 +1,12 @@
+from urllib import response
 from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from django.contrib.auth import authenticate
-from .models import User, Course, CourseCategory, CourseSubcategory, CourseModule, Lecture, Document, Review
-from .serializers import UserSerializer, CourseSerializer, CourseCategorySerializer, CourseSubcategorySerializer, CourseModuleSerializer, LectureSerializer, DocumentSerializer, ReviewSerializer
+from .models import User, Course, CourseCategory, CourseSubcategory, CourseModule, Lecture, Document, Review, View
+from .serializers import UserSerializer, CourseSerializer, CourseCategorySerializer, CourseSubcategorySerializer, CourseModuleSerializer, LectureSerializer, DocumentSerializer, ReviewSerializer, ViewSerializer
 from .utilities import LimitPagination, PagePagination
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
@@ -41,7 +42,35 @@ def login_check(request):
             'phone': user.phone,
             })
     else :
-        return Response({'message':"Not Successful"})
+        return Response({'message':"User does not exists", "redirect":"signup"})
+
+@api_view(["POST"])  
+def signup(request):
+    email = request.data.get('email').lower().strip()
+    password = request.data.get('password')
+
+    try:
+        created_user = User.objects.create(email=email)
+        created_user.set_password(password)
+        created_user.save()
+        user = authenticate(email=email, password=password)
+    except:
+        raise Exception("Can't Create/Authenticate User")
+
+
+    if (user is not None):
+        return Response({
+            'message':"Successful", 
+            'firstName': user.first_name, 
+            'lastName': user.last_name, 
+            'user_id': user.id, 
+            'email': user.email,
+            'age' : user.age,
+            'gender': user.gender,
+            'phone': user.phone,
+            })
+    else :
+        return Response({'message':"User does not exists"})
 
 @api_view(['POST'])    
 def google_login_check(request):
@@ -104,6 +133,35 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     pagination_class = PagePagination
 
+    @action(detail=False, methods=['GET'], url_path='free')
+    def free(self, request):
+        free_courses = Course.objects.filter(price=0)
+        page = self.paginate_queryset(free_courses)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(free_courses, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['GET'], url_path='trending')
+    def trending(self, request):
+        trending_courses = Course.objects.order_by('-views')
+        page = self.paginate_queryset(trending_courses)
+        serializer = self.get_serializer(page, many=True)
+        response = self.get_paginated_response(serializer.data)
+        return response
+
+    @action(detail=False, methods=['GET'], url_path='related')
+    def related(self, request):
+        print("Entered related()")
+        category= CourseCategory.objects.get(id=request.query_params.get('category'))
+        related_courses = Course.objects.filter(category=category).order_by("-views")
+        page = self.paginate_queryset(related_courses)
+        serializer = self.get_serializer(page, many=True)
+        response = self.get_paginated_response(serializer.data)
+        return response
+
 
 class CourseCategoryViewSet(viewsets.ModelViewSet):
     queryset = CourseCategory.objects.all()
@@ -133,5 +191,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+    pagination_class = LimitPagination
+
+class ViewViewSet(viewsets.ModelViewSet):
+    queryset = View.objects.all()
+    serializer_class = ViewSerializer
     pagination_class = LimitPagination
 
