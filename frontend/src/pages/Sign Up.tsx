@@ -31,7 +31,6 @@ const Signup: React.FC = () => {
     password: "",
     first_name:"",
     last_name:"",
-    role:"",
 });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,7 +86,7 @@ const Signup: React.FC = () => {
           localStorage.setItem('age', data['age']);
           localStorage.setItem('gender', data['gender']);
           localStorage.setItem('phone', data['phone']);          
-          setTimeout(() => navigate(-1),500);
+          navigate('/role')
         }
         else{
           localStorage.setItem('logged', 'false');
@@ -141,7 +140,7 @@ const handleGoogleLoginSuccess = async (credentialResponse: any) => {
           localStorage.setItem('age', data['age']);
           localStorage.setItem('phone', data['phone']);
           
-          setTimeout(() => navigate(-1),500);
+          navigate("role")
     }
   }
   catch(error){
@@ -205,14 +204,13 @@ const handleFacebookLogin = async () => {
         method="get"
         className="h-2/3 flex flex-col justify-evenly max-h-[600px]"
       >
-        <div className="">
         <label htmlFor="first_name">First Name</label>
         <input
             type="text"
             onChange={handleChange}
             name="first_name"
             value={formData.first_name}
-            placeholder="Enter your first name."
+            placeholder="Enter your first name"
           />
         <label htmlFor="last_name">Last Name</label>
         <input
@@ -220,7 +218,7 @@ const handleFacebookLogin = async () => {
             onChange={handleChange}
             name="last_name"
             value={formData.last_name}
-            placeholder="Enter your last name."
+            placeholder="Enter your last name"
           />
           <label htmlFor="email">Email</label>
           <input
@@ -230,8 +228,6 @@ const handleFacebookLogin = async () => {
             value={formData.email}
             placeholder="Enter your email address"
           />
-        </div>
-        <div className="">
           <label htmlFor="password">Password</label>
           <input
             type="password"
@@ -240,8 +236,6 @@ const handleFacebookLogin = async () => {
             value={formData.password}
             placeholder="Enter your password"
           />
-
-        </div>
         <button type="submit" className="mb-5 justify-self-center">
         Sign Up
         </button>

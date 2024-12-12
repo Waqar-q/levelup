@@ -4,17 +4,36 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
+from .authentication import JWTAuthentication
 from .models import User, Course, CourseCategory, CourseSubcategory, CourseModule, Lecture, Document, Review, View
 from .serializers import UserSerializer, CourseSerializer, CourseCategorySerializer, CourseSubcategorySerializer, CourseModuleSerializer, LectureSerializer, DocumentSerializer, ReviewSerializer, ViewSerializer
 from .utilities import LimitPagination, PagePagination
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
 import requests 
-from backend.settings import GOOGLE_OAUTH2_CLIENT_ID, FACEBOOK_APP_ID, FACEBOOK_APP_SECRET
+from backend.settings import GOOGLE_OAUTH2_CLIENT_ID, FACEBOOK_APP_ID, FACEBOOK_APP_SECRET, SECRET_KEY
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    @action(detail=False, methods=['GET'], url_path='enroll')
+    def enroll(self, request):
+        print("request User", request.user)
+        user = User.objects.get(id=request.user.id)
+        
+        course_id = request.query_params.get('id')
+        new_course = Course.objects.get(id=course_id)
+        user.courses.add(new_course)
+        try:
+            user.save()
+            print(user.courses.all())
+            return Response({"message": "Successful"})
+        except Exception as e:
+            print(e)
+            return Response({"message": e})
 
 def homepage(request):
     return render(request, 'index.html')
@@ -31,7 +50,10 @@ def login_check(request):
 
 
     if (user is not None):
-        return Response({
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        
+        response = Response({
             'message':"Successful", 
             'firstName': user.first_name, 
             'lastName': user.last_name, 
@@ -41,6 +63,14 @@ def login_check(request):
             'gender': user.gender,
             'phone': user.phone,
             })
+        response.set_cookie(
+        key='jwt', 
+        value=access_token, 
+        httponly=True,  
+        secure=True,    
+        samesite='Lax'  
+    )
+        return response
     else :
         return Response({'message':"User does not exists", "redirect":"signup"})
 
@@ -48,9 +78,11 @@ def login_check(request):
 def signup(request):
     email = request.data.get('email').lower().strip()
     password = request.data.get('password')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
 
     try:
-        created_user = User.objects.create(email=email)
+        created_user = User.objects.create(email=email, first_name=first_name, last_name=last_name)
         created_user.set_password(password)
         created_user.save()
         user = authenticate(email=email, password=password)
@@ -128,6 +160,11 @@ def facebook_login_check(request):
     
     return Response({'email': user_email, 'name': user_name, 'picture':picture_url})
 
+def logout(request):
+    response = Response({'message':'Logged out Successfully!'})
+    response.delete_cookie('jwt')
+    return response
+
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -154,13 +191,18 @@ class CourseViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['GET'], url_path='related')
     def related(self, request):
-        print("Entered related()")
         category= CourseCategory.objects.get(id=request.query_params.get('category'))
         related_courses = Course.objects.filter(category=category).order_by("-views")
         page = self.paginate_queryset(related_courses)
         serializer = self.get_serializer(page, many=True)
         response = self.get_paginated_response(serializer.data)
         return response
+
+
+        
+
+
+
 
 
 class CourseCategoryViewSet(viewsets.ModelViewSet):

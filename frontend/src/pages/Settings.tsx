@@ -28,7 +28,24 @@ const Settings: React.FC = () => {
         dialogRef.current?.showModal()};
   }
 
-  const handleLogout = () => {
+  const handleLogout = async() => {
+    try {
+        const response = await fetch(process.env.REACT_APP_BASE_BACK_URL + "/auth/logout", {
+            method: "POST",
+            body:JSON.stringify({}),
+            credentials: "include",
+        });
+
+        if (response.ok) {
+            console.log("Logout successful!");
+            navigate("/login");
+        } else {
+            console.error("Logout failed:", response.statusText);
+        }}
+    catch (error){
+        console.log(error)
+        }
+
     localStorage.removeItem('logged');
     localStorage.removeItem('user_id');
     localStorage.removeItem('firstName');
@@ -37,7 +54,7 @@ const Settings: React.FC = () => {
     localStorage.removeItem('gender');
     localStorage.removeItem('email');
     localStorage.removeItem('phone');
-    navigate('/login');
+    
 
   }
   

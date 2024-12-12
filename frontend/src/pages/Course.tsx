@@ -13,11 +13,12 @@ import getCookie from "../utilities/getCookie";
 
 const CoursePage: React.FC = () => {
   const [course, setCourse] = useState<Course>();
+  const [courseState, setCourseState] = useState<Course>();
   const [relatedCourses, setRelatedCourses] = useState<Course[]>([]);
   const { id } = useParams<{ id: string }>();
   const [thumbnail, setThumbnail] = useState(new Image());
-  const userID = localStorage.getItem("user_id");
-  const csrftoken = getCookie('csrftoken')
+  const user_id = localStorage.getItem("user_id");
+  const csrftoken = getCookie("csrftoken");
 
   const [fieldEdit, setFieldEdit] = useState({
     course_name: false,
@@ -28,11 +29,10 @@ const CoursePage: React.FC = () => {
     requirements: false,
   });
 
-  const [courseState, setCourseState] = useState<Course>()
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [id]);
 
   const fetchData = () => {
     try {
@@ -56,7 +56,7 @@ const CoursePage: React.FC = () => {
           {
             /*Assigning course values to state variables*/
           }
-          setCourseState(course)
+          setCourseState(course);
 
           {
             /* Fetching Related Courses*/
@@ -97,15 +97,14 @@ const CoursePage: React.FC = () => {
   };
 
   const tickClick = async (pname: string, value: string) => {
-
     try {
-      console.log("stringify:", JSON.stringify({[pname]:value}))
+      console.log("stringify:", JSON.stringify({ [pname]: value }));
 
       const response = await fetch(
         process.env.REACT_APP_BASE_FRONT_URL + "/api/courses/" + id + "/",
         {
           method: "PATCH",
-          body: JSON.stringify({[pname]:value}),
+          body: JSON.stringify({ [pname]: value }),
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": csrftoken,
@@ -115,15 +114,41 @@ const CoursePage: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setFieldEdit({...fieldEdit,[pname]: false}); 
+        setFieldEdit({ ...fieldEdit, [pname]: false });
         toast.success("Saved.");
-        fetchData()
+        fetchData();
       }
     } catch (error) {
       toast.error("Failed to update course. Please try again.");
       console.error(error);
     }
   };
+
+  const enroll =async (id: string | undefined) => {
+    try{
+      const response = await fetch(
+        process.env.REACT_APP_BASE_FRONT_URL + "/api/users/enroll/?id=" + id,{
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken,
+          },
+          credentials: 'include',
+      })
+      
+      if(!response.ok){
+        toast.error("Something went wrong.")
+        throw new Error("Enroll response not OK.")
+      }
+      else{
+        const data = await response.json()
+        console.log("Enroll:",data)
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
   return (
     <section className="course-page">
@@ -160,25 +185,35 @@ const CoursePage: React.FC = () => {
                         className="font-semibold text-xl text-dark"
                         autoFocus
                         type="text"
-                        onChange={(e) => setCourseState({...course,[e.currentTarget.name]:e.target.value})}
+                        onChange={(e) =>
+                          setCourseState({
+                            ...course,
+                            [e.currentTarget.name]: e.target.value,
+                          })
+                        }
                         value={courseState?.course_name}
                       />
                       <span>
                         <button
                           className="tick-button"
-                          onClick={(e) => 
+                          onClick={(e) =>
                             tickClick(
-                              e.currentTarget.closest(".course-name")?.querySelector("input")?.name || "",
-                              e.currentTarget.closest(".course-name")?.querySelector("input")?.value || "")
-                          } >
-                        
+                              e.currentTarget
+                                .closest(".course-name")
+                                ?.querySelector("input")?.name || "",
+                              e.currentTarget
+                                .closest(".course-name")
+                                ?.querySelector("input")?.value || ""
+                            )
+                          }
+                        >
                           <i className="material-icons text-green-500">check</i>
                         </button>
                       </span>
                       <span>
                         <button
                           className="close-button"
-                          onClick={(e) => editClick('')}
+                          onClick={(e) => editClick("")}
                         >
                           <i className="material-icons text-red-500">close</i>
                         </button>
@@ -206,20 +241,30 @@ const CoursePage: React.FC = () => {
                   {fieldEdit.tag_line ? (
                     <div className="tagline flex items-center relative">
                       <input
-                      name="tag_line"
+                        name="tag_line"
                         className="text-sm italic text-gray-800"
                         autoFocus
                         type="text"
-                        onChange={(e) => setCourseState({...course,[e.currentTarget.name]:e.target.value})}
+                        onChange={(e) =>
+                          setCourseState({
+                            ...course,
+                            [e.currentTarget.name]: e.target.value,
+                          })
+                        }
                         value={courseState?.tag_line}
                       />
                       <span>
                         <button
                           className="tick-button"
-                          onClick={(e) => 
+                          onClick={(e) =>
                             tickClick(
-                              e.currentTarget.closest(".tagline")?.querySelector("input")?.name || "",
-                              e.currentTarget.closest(".tagline")?.querySelector("input")?.value || "")
+                              e.currentTarget
+                                .closest(".tagline")
+                                ?.querySelector("input")?.name || "",
+                              e.currentTarget
+                                .closest(".tagline")
+                                ?.querySelector("input")?.value || ""
+                            )
                           }
                         >
                           <i className="material-icons text-green-500">check</i>
@@ -243,7 +288,7 @@ const CoursePage: React.FC = () => {
                         <button
                           name="tagline"
                           className="edit-button"
-                          onClick={(e) => editClick('tag_line')}
+                          onClick={(e) => editClick("tag_line")}
                         >
                           <i className="material-icons-outlined text-accent">
                             edit
@@ -266,20 +311,30 @@ const CoursePage: React.FC = () => {
                   {fieldEdit.language ? (
                     <div className=" language flex items-center relative">
                       <input
-                      name="language"
+                        name="language"
                         className="flex text-sm p-1 items-center "
                         autoFocus
                         type="text"
-                        onChange={(e) => setCourseState({...course,[e.currentTarget.name]:e.target.value})}
+                        onChange={(e) =>
+                          setCourseState({
+                            ...course,
+                            [e.currentTarget.name]: e.target.value,
+                          })
+                        }
                         value={courseState?.language}
                       />
                       <span>
                         <button
                           className="tick-button"
-                          onClick={(e) => 
+                          onClick={(e) =>
                             tickClick(
-                              e.currentTarget.closest(".language")?.querySelector("input")?.name || "",
-                              e.currentTarget.closest(".language")?.querySelector("input")?.value || "")
+                              e.currentTarget
+                                .closest(".language")
+                                ?.querySelector("input")?.name || "",
+                              e.currentTarget
+                                .closest(".language")
+                                ?.querySelector("input")?.value || ""
+                            )
                           }
                         >
                           <i className="material-icons text-green-500">check</i>
@@ -340,16 +395,26 @@ const CoursePage: React.FC = () => {
                       className="border-none text-xl"
                       autoFocus
                       type="text"
-                      onChange={(e) => setCourseState({...course,[e.currentTarget.name]:e.target.value})}
+                      onChange={(e) =>
+                        setCourseState({
+                          ...course,
+                          [e.currentTarget.name]: e.target.value,
+                        })
+                      }
                       value={courseState?.price}
                     />
                     <span>
                       <button
                         className="tick-button"
-                        onClick={(e) => 
+                        onClick={(e) =>
                           tickClick(
-                            e.currentTarget.closest(".price")?.querySelector("input")?.name || "",
-                            e.currentTarget.closest(".price")?.querySelector("input")?.value || "")
+                            e.currentTarget
+                              .closest(".price")
+                              ?.querySelector("input")?.name || "",
+                            e.currentTarget
+                              .closest(".price")
+                              ?.querySelector("input")?.value || ""
+                          )
                         }
                       >
                         <i className="material-icons text-green-500">check</i>
@@ -392,15 +457,27 @@ const CoursePage: React.FC = () => {
                       name="description"
                       className="border-none description my-1 text-sm"
                       autoFocus
-                      onChange={(e) => setCourseState({...course,[e.currentTarget.name]:e.target.value})}
+                      onChange={(e) =>
+                        setCourseState({
+                          ...course,
+                          [e.currentTarget.name]: e.target.value,
+                        })
+                      }
                       value={courseState?.description}
                     />
                     <span>
                       <button
                         className="tick-button"
-                        onClick={(e) => tickClick(
-                          e.currentTarget.closest(".description")?.querySelector("textarea")?.name || "",
-                          e.currentTarget.closest(".description")?.querySelector("textarea")?.value || "")}
+                        onClick={(e) =>
+                          tickClick(
+                            e.currentTarget
+                              .closest(".description")
+                              ?.querySelector("textarea")?.name || "",
+                            e.currentTarget
+                              .closest(".description")
+                              ?.querySelector("textarea")?.value || ""
+                          )
+                        }
                       >
                         <i className="material-icons text-green-500">check</i>
                       </button>
@@ -442,15 +519,27 @@ const CoursePage: React.FC = () => {
                       name="requirements"
                       className="border-none requirements my-1 text-sm whitespace-pre-line"
                       autoFocus
-                      onChange={(e) => setCourseState({...course,[e.currentTarget.name]:e.target.value})}
+                      onChange={(e) =>
+                        setCourseState({
+                          ...course,
+                          [e.currentTarget.name]: e.target.value,
+                        })
+                      }
                       value={courseState?.requirements}
                     />
                     <span>
                       <button
                         className="tick-button"
-                        onClick={(e) => tickClick(
-                          e.currentTarget.closest(".requirements")?.querySelector("textarea")?.name || "",
-                          e.currentTarget.closest(".requirements")?.querySelector("textarea")?.value || "")}
+                        onClick={(e) =>
+                          tickClick(
+                            e.currentTarget
+                              .closest(".requirements")
+                              ?.querySelector("textarea")?.name || "",
+                            e.currentTarget
+                              .closest(".requirements")
+                              ?.querySelector("textarea")?.value || ""
+                          )
+                        }
                       >
                         <i className="material-icons text-green-500">check</i>
                       </button>
@@ -459,7 +548,7 @@ const CoursePage: React.FC = () => {
                       <button
                         className="close-button"
                         onClick={(e) => {
-                           editClick("");
+                          editClick("");
                         }}
                       >
                         <i className="material-icons text-red-500">close</i>
@@ -486,7 +575,7 @@ const CoursePage: React.FC = () => {
                 )}
               </div>
               <div className=" flex fixed h-20 items-center justify-center border-t bottom-0 left-0 w-full bg-white px-5">
-                <button className="w-full">Enroll</button>
+                <button className="w-full" onClick={() => enroll(id)}>Enroll</button>
               </div>
 
               {/*---------------------------Sliders----------------------------------*/}
@@ -502,7 +591,7 @@ const CoursePage: React.FC = () => {
                 </div>
                 <div className="slider flex min-h-96 overflow-x-scroll">
                   {relatedCourses.map((course) => (
-                    <Link to={`/course/${course.id}`} className="">
+                    <Link to={`/course/${course.id}/`} className="">
                       <Card key={course.id} course={course} />
                     </Link>
                   ))}
