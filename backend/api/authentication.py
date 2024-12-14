@@ -1,3 +1,4 @@
+import datetime
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 import jwt
@@ -6,9 +7,26 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+def create_refresh_token(user_id):
+    expiration_time = datetime.utcnow() + datetime.timedelta(hours=1)
+
+    payload = {
+        'user_id': user_id,
+        'exp': expiration_time,
+        'iat': datetime.utcnow(),
+    }
+
+    token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+    return token
+
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
         token = request.COOKIES.get('jwt') 
+        print(request.path)
+
+        if request.path == "/api/auth/login/":
+            return None
+        
         if not token:
             return None 
         

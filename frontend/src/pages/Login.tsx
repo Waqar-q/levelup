@@ -5,25 +5,24 @@ import googleLogo from "../assets/Google-G-logo.png";
 import facebookLogo from "../assets/facebook-logo.png";
 import { Form, Link, Navigate, redirect, useNavigate } from "react-router-dom";
 import getCookie from "../utilities/getCookie";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { GoogleLogin } from '@react-oauth/google';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login: React.FC = () => {
   const csrftoken = getCookie("csrftoken");
   const navigate = useNavigate();
 
   const [user, setUser] = useState({
-    'id': '',
-    'firstName': '',
-    'lastName': '',
-    'fullName': '',
-    'email': '',
-    'age': '',
-    'gender': '',
-    'phone': '',
-    'logged': false,
+    id: "",
+    firstName: "",
+    lastName: "",
+    fullName: "",
+    email: "",
+    age: "",
+    gender: "",
+    phone: "",
+    logged: false,
   });
 
   const [formData, setFormData] = useState({
@@ -42,7 +41,7 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     try {
       const response = await fetch(
         process.env.REACT_APP_BASE_FRONT_URL + "/api/auth/login/",
@@ -61,35 +60,33 @@ const Login: React.FC = () => {
         const data = await response.json();
         console.log(data);
         if (data["message"] === "Successful") {
-
-          toast.success("You have been successfully logged in.")
+          toast.success("You have been successfully logged in.");
           setUser({
             ...user,
-            'id': data['user_id'],
-            'firstName': data['firstName'],
-            'lastName': data['lastName'],
-            'fullName': data['fullName'],
-            'email': data['email'],
-            'age': data['age'],
-            'gender': data['gender'],
-            'phone': data['phone'],
-            'logged': true,
+            id: data["user_id"],
+            firstName: data["firstName"],
+            lastName: data["lastName"],
+            fullName: data["fullName"],
+            email: data["email"],
+            age: data["age"],
+            gender: data["gender"],
+            phone: data["phone"],
+            logged: true,
           });
-          
-          localStorage.setItem('logged', 'true');
-          localStorage.setItem('user_id', data['user_id']);
-          localStorage.setItem('firstName', data['firstName']);
-          localStorage.setItem('lastName', data['lastName']);
-          localStorage.setItem('email', data['email']);
-          localStorage.setItem('age', data['age']);
-          localStorage.setItem('gender', data['gender']);
-          localStorage.setItem('phone', data['phone']);          
-          setTimeout(() => navigate(-1),500);
-        }
-        else if (data["redirect"] === "signup"){
-          localStorage.setItem('logged', 'false');
+
+          localStorage.setItem("logged", "true");
+          localStorage.setItem("user_id", data["user_id"]);
+          localStorage.setItem("firstName", data["firstName"]);
+          localStorage.setItem("lastName", data["lastName"]);
+          localStorage.setItem("email", data["email"]);
+          localStorage.setItem("age", data["age"]);
+          localStorage.setItem("gender", data["gender"]);
+          localStorage.setItem("phone", data["phone"]);
+          setTimeout(() => navigate("/explore"), 500);
+        } else if (data["redirect"] === "signup") {
+          localStorage.setItem("logged", "false");
           toast.error(data["message"]);
-          navigate("/signup")
+          navigate("/signup");
         }
       }
     } catch (error) {
@@ -97,103 +94,105 @@ const Login: React.FC = () => {
     }
   };
 
-const handleGoogleLoginSuccess = async (credentialResponse: any) => {
-  const {credential} = credentialResponse;
-  const accessToken: string = credential;
+  const handleGoogleLoginSuccess = async (credentialResponse: any) => {
+    const { credential } = credentialResponse;
+    const accessToken: string = credential;
 
-  try {
-    const response = await fetch(process.env.REACT_APP_BASE_FRONT_URL + "/api/auth/google-login/",{
-      method:"POST",
-      body: JSON.stringify({
-        token: accessToken,
-      }),
-      headers:{
-        "Content-Type": 'application/json',
-        "X-CSRFToken": csrftoken,
-      },
-      credentials: 'include',
-    })
-    const data: {[key: string]: string} = await response.json();
-    if(!response.ok){throw console.error("Response is not OK");
-    }
-    else if (data['login status'] === 'true'){
-      toast.success("You have been successfully logged in.")
-          setUser({
-            ...user,
-            'id': data['user_id'],
-            'email': data['email'],
-            'firstName': data['firstName'],
-            'lastName': data['lastName'],
-            'gender': data['gender'],
-            'age': data['age'],
-            'phone': data['phone'],
-            'logged': true,
-          });
-          
-          localStorage.setItem('logged', 'true');
-          localStorage.setItem('user_id', data['user_id']);
-          localStorage.setItem('email', data['email']);
-          localStorage.setItem('firstName', data['firstName']);
-          localStorage.setItem('lastName', data['lastName']);
-          localStorage.setItem('gender', data['gender']);
-          localStorage.setItem('age', data['age']);
-          localStorage.setItem('phone', data['phone']);
-          
-          setTimeout(() => navigate(-1),500);
-    }
-  }
-  catch(error){
-    console.error(error)
-  }
-}
-
-const handleGoogleLoginFailure = () => {
-
-}
-
-const handleFacebookLogin = async () => {
-  window.FB.login(async (response: any) => {
-    if (response.authResponse){
-      console.log("Login successful", response.authResponse.accessToken)
-      const accessToken = response.authResponse.accessToken;
-
-      try{
-        const backend_response = await fetch(process.env.REACT_APP_BASE_FRONT_URL + "/api/auth/facebook-login/",{
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_BASE_FRONT_URL + "/api/auth/google-login/",
+        {
           method: "POST",
           body: JSON.stringify({
-            'fb-token': accessToken,
+            token: accessToken,
           }),
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             "X-CSRFToken": csrftoken,
           },
-          credentials: 'include',
-                  })
-        
-          if (!backend_response.ok){
-            console.log("Response is not OK", backend_response)
-          }
-          else{
-            const data = await backend_response.json()
-            console.log(data)
-            navigate(-1);
-          }
+          credentials: "include",
         }
-        catch(error){
-          console.error(error);
-          
-        }
-      }
-    else {
-      console.log("Login response invalid")
-    }
-  }, {scope: 'email,public_profile'});
-}
+      );
+      const data: { [key: string]: string } = await response.json();
+      if (!response.ok) {
+        throw console.error("Response is not OK");
+      } else if (data["login status"] === "true") {
+        toast.success("You have been successfully logged in.");
+        setUser({
+          ...user,
+          id: data["user_id"],
+          email: data["email"],
+          firstName: data["firstName"],
+          lastName: data["lastName"],
+          gender: data["gender"],
+          age: data["age"],
+          phone: data["phone"],
+          logged: true,
+        });
 
+        localStorage.setItem("logged", "true");
+        localStorage.setItem("user_id", data["user_id"]);
+        localStorage.setItem("email", data["email"]);
+        localStorage.setItem("firstName", data["firstName"]);
+        localStorage.setItem("lastName", data["lastName"]);
+        localStorage.setItem("gender", data["gender"]);
+        localStorage.setItem("age", data["age"]);
+        localStorage.setItem("phone", data["phone"]);
+
+        setTimeout(() => navigate(-1), 500);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleGoogleLoginFailure = () => {};
+
+  const handleFacebookLogin = async () => {
+    window.FB.login(
+      async (response: any) => {
+        if (response.authResponse) {
+          console.log("Login successful", response.authResponse.accessToken);
+          const accessToken = response.authResponse.accessToken;
+
+          try {
+            const backend_response = await fetch(
+              process.env.REACT_APP_BASE_FRONT_URL +
+                "/api/auth/facebook-login/",
+              {
+                method: "POST",
+                body: JSON.stringify({
+                  "fb-token": accessToken,
+                }),
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrftoken,
+                },
+                credentials: "include",
+              }
+            );
+
+            if (!backend_response.ok) {
+              console.log("Response is not OK", backend_response);
+            } else {
+              const data = await backend_response.json();
+              console.log(data);
+              navigate(-1);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          console.log("Login response invalid");
+        }
+      },
+      { scope: "email,public_profile" }
+    );
+  };
 
   return (
     <section className="login flex flex-col justify-between p-5 h-[100vh]">
-      <ToastContainer/>
+      <ToastContainer />
       <div className="heading">
         <h1 className="text-5xl py-5">Login</h1>
         <p className="text-lg">Enter the new era of learning.</p>
@@ -228,25 +227,34 @@ const handleFacebookLogin = async () => {
         </button>
       </form>
       <hr />
-        <div className="social-login flex flex-col items-center w-full">
-          <p className="my-4">Other ways to login or <Link className="underline" to='/signup'>signup</Link></p>
-          <div className="flex justify-center w-full">
-            <button type="button" className="w-1/2 flex justify-center" onClick={handleFacebookLogin}>
-              <img src={facebookLogo} className="w-6" alt="Facebook Logo" />
-            </button>
-            <GoogleLogin
-                onSuccess={handleGoogleLoginSuccess}
-                onError={handleGoogleLoginFailure}
-                type="standard"
-                theme="outline"
-                size="large"
-                text="signin_with"
-                shape="pill"
-                logo_alignment="center"
-                width="100%"
-      />
-          </div>
+      <div className="social-login flex flex-col items-center w-full">
+        <p className="my-4">
+          Other ways to login or{" "}
+          <Link className="underline" to="/signup">
+            signup
+          </Link>
+        </p>
+        <div className="flex justify-center w-full">
+          <button
+            type="button"
+            className="w-1/2 flex justify-center"
+            onClick={handleFacebookLogin}
+          >
+            <img src={facebookLogo} className="w-6" alt="Facebook Logo" />
+          </button>
+          <GoogleLogin
+            onSuccess={handleGoogleLoginSuccess}
+            onError={handleGoogleLoginFailure}
+            type="standard"
+            theme="outline"
+            size="large"
+            text="signin_with"
+            shape="pill"
+            logo_alignment="center"
+            width="100%"
+          />
         </div>
+      </div>
       <div></div>
     </section>
   );

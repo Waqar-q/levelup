@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import Loader from "../components/Loader";
 import Input from "../components/Input_Field";
 import googleLogo from "../assets/Google-G-logo.png";
 import facebookLogo from "../assets/facebook-logo.png";
-import { Course, CourseCategory } from "./Test";
+import { Course, CourseCategory, User } from "./Test";
 import { Link, useFetcher, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Card from "../components/Card";
@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import getCookie from "../utilities/getCookie";
 
 const CoursePage: React.FC = () => {
+  const [user, setUser] = useState<User>();
   const [course, setCourse] = useState<Course>();
   const [courseState, setCourseState] = useState<Course>();
   const [relatedCourses, setRelatedCourses] = useState<Course[]>([]);
@@ -19,6 +20,10 @@ const CoursePage: React.FC = () => {
   const [thumbnail, setThumbnail] = useState(new Image());
   const user_id = localStorage.getItem("user_id");
   const csrftoken = getCookie("csrftoken");
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [isEnrolled, setEnrolled] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
+
 
   const [fieldEdit, setFieldEdit] = useState({
     course_name: false,
@@ -36,6 +41,7 @@ const CoursePage: React.FC = () => {
 
   const fetchData = () => {
     try {
+      /* Fetching THE Course*/
       fetch(process.env.REACT_APP_BASE_BACK_URL + `/api/courses/${id}/`, {
         method: "GET",
         headers: {
@@ -52,6 +58,9 @@ const CoursePage: React.FC = () => {
         })
         .then((course) => {
           thumbnail.src = course.thumbnail;
+          if (course.instructor == user_id){
+            setIsOwner(true);
+          }
 
           {
             /*Assigning course values to state variables*/
@@ -78,7 +87,30 @@ const CoursePage: React.FC = () => {
               console.log("Related Courses:", data);
               setRelatedCourses(data.results);
             });
-        });
+        
+        /* Fetching User Data*/
+        fetch(
+          process.env.REACT_APP_BASE_BACK_URL +
+            `/api/users/${user_id}/`,
+          {
+            method: "GET",
+            headers: {
+              Accept: "application/json",
+            },
+          }
+        )
+          .then((response) => {
+            return response.json();
+          })
+          .then((user) => {
+            console.log("User:", user);
+            setUser(user);
+            if (user.courses.includes(id))
+            {setEnrolled(true);}
+          });
+
+          });
+      
     } catch (error) {
       console.log(error);
     }
@@ -124,6 +156,17 @@ const CoursePage: React.FC = () => {
     }
   };
 
+  const toggleEnrollDialog = () => {
+    
+    if (dialogRef.current?.open){
+      document.body.classList.remove('no-scroll');
+        dialogRef.current?.close();}
+
+    else {
+      document.body.classList.add('no-scroll');
+        dialogRef.current?.showModal()};
+  }
+
   const enroll =async (id: string | undefined) => {
     try{
       const response = await fetch(
@@ -143,6 +186,8 @@ const CoursePage: React.FC = () => {
       else{
         const data = await response.json()
         console.log("Enroll:",data)
+        toggleEnrollDialog()
+        
       }
     }
     catch(error){
@@ -224,7 +269,7 @@ const CoursePage: React.FC = () => {
                       <h2 className="title py-2 text-xl text-dark">
                         {course.course_name}
                       </h2>
-                      <span>
+                      {isOwner && <span>
                         <button
                           name="courseName"
                           className="edit-button"
@@ -234,7 +279,7 @@ const CoursePage: React.FC = () => {
                             edit
                           </i>
                         </button>
-                      </span>
+                      </span>}
                     </div>
                   )}
 
@@ -284,7 +329,7 @@ const CoursePage: React.FC = () => {
                       <p className="tagline text-sm italic text-gray-800">
                         {course.tag_line}
                       </p>
-                      <span>
+                      {isOwner && <span>
                         <button
                           name="tagline"
                           className="edit-button"
@@ -294,7 +339,7 @@ const CoursePage: React.FC = () => {
                             edit
                           </i>
                         </button>
-                      </span>
+                      </span>}
                     </div>
                   )}
                 </div>
@@ -356,7 +401,7 @@ const CoursePage: React.FC = () => {
                       <p className="language flex text-sm p-1 items-center ">
                         {course.language}
                       </p>
-                      <span>
+                      {isOwner && <span>
                         <button
                           name="language"
                           className="edit-button"
@@ -366,7 +411,7 @@ const CoursePage: React.FC = () => {
                             edit
                           </i>
                         </button>
-                      </span>
+                      </span>}
                     </div>
                   )}
 
@@ -434,7 +479,7 @@ const CoursePage: React.FC = () => {
                 ) : (
                   <div className="flex items-center relative">
                     <p className="text-xl">{course.price}</p>
-                    <span>
+                    {isOwner && <span>
                       <button
                         className="edit-button"
                         onClick={(e) => editClick("price")}
@@ -443,7 +488,7 @@ const CoursePage: React.FC = () => {
                           edit
                         </i>
                       </button>
-                    </span>
+                    </span>}
                   </div>
                 )}
               </div>
@@ -496,7 +541,7 @@ const CoursePage: React.FC = () => {
                     <p className="description my-1 text-sm">
                       {course.description}
                     </p>
-                    <span>
+                    {isOwner && <span>
                       <button
                         name="description"
                         className="edit-button"
@@ -506,7 +551,7 @@ const CoursePage: React.FC = () => {
                           edit
                         </i>
                       </button>
-                    </span>
+                    </span>}
                   </div>
                 )}
               </div>
@@ -560,7 +605,7 @@ const CoursePage: React.FC = () => {
                     <p className="requirements my-1 text-sm whitespace-pre-line">
                       {String(course.requirements).replace(/\\n/g, "\n")}
                     </p>
-                    <span>
+                    {isOwner && <span>
                       <button
                         name="requirements"
                         className="edit-button"
@@ -570,13 +615,23 @@ const CoursePage: React.FC = () => {
                           edit
                         </i>
                       </button>
-                    </span>
+                    </span>}
                   </div>
                 )}
               </div>
-              <div className=" flex fixed h-20 items-center justify-center border-t bottom-0 left-0 w-full bg-white px-5">
-                <button className="w-full" onClick={() => enroll(id)}>Enroll</button>
-              </div>
+
+              { !isEnrolled && (
+              <div className="flex fixed h-20 items-center justify-center border-t bottom-0 left-0 w-full bg-white px-5">
+                <button className="w-full" onClick={(e) => {e.preventDefault(); toggleEnrollDialog()}}>Enroll</button>
+                <dialog className="dialog enroll-dialog z-[999]" ref={dialogRef}>
+                <p className="my-5 text-center">Are you sure you want to Enroll?</p>
+                <div className="flex w-full">
+                    <button type="button" onClick={toggleEnrollDialog} autoFocus>Cancel</button>
+                    <button onClick={() => enroll(id)}>Enroll</button>
+                    </div>
+                </dialog>
+              </div>)
+      }
 
               {/*---------------------------Sliders----------------------------------*/}
               <div className="related-courses">

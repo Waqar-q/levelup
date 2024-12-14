@@ -12,11 +12,14 @@ import Dialog from "../components/Dialog";
 import Radio from "../components/Radio";
 import BottomMenu from "../components/Bottom_Menu";
 import defaultDp from "../assets/default_dp.jpg";
+import getCookie from "../utilities/getCookie";
 
 const Settings: React.FC = () => {
   
   const navigate = useNavigate();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const csrftoken = getCookie('csrftoken');
+  console.log(csrftoken)
 
   const toggleLogoutDialog = () => {
     console.log("toggleLogoutDialog")
@@ -30,9 +33,13 @@ const Settings: React.FC = () => {
 
   const handleLogout = async() => {
     try {
-        const response = await fetch(process.env.REACT_APP_BASE_BACK_URL + "/auth/logout", {
+        const response = await fetch(process.env.REACT_APP_BASE_BACK_URL + "/api/auth/logout/", {
             method: "POST",
             body:JSON.stringify({}),
+            headers:{
+                "X-CSRFToken": csrftoken,
+                "Content-Type": "application/json",
+            },
             credentials: "include",
         });
 
@@ -41,6 +48,8 @@ const Settings: React.FC = () => {
             navigate("/login");
         } else {
             console.error("Logout failed:", response.statusText);
+            console.error("Response:", response);
+
         }}
     catch (error){
         console.log(error)

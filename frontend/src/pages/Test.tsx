@@ -13,7 +13,7 @@ import Radio from "../components/Radio";
 import BottomMenu from "../components/Bottom_Menu";
 import { ProgressBar } from "react-toastify/dist/components";
 
-interface User {
+export interface User {
   id: string;
   last_login: string;
   is_superuser: true;
@@ -102,7 +102,7 @@ const Explore: React.FC = () => {
       fetch(process.env.REACT_APP_BASE_BACK_URL + `/api/users/${user_id}/`, {
         method: "GET",
         headers: {
-          Accept: "application/json",
+          'Accept': "application/json",
         },
       })
         .then((response) => response.json())
@@ -111,9 +111,8 @@ const Explore: React.FC = () => {
           setUser(data);
           return data.courses;
         })
-
         .then((courses: string[]) => {
-          if (courses.length) {
+          if (courses) {
             setHasOngoingCourses(true);
             const coursePromises = courses.map((course) => {
               console.log("Course:", course);

@@ -9,3 +9,5 @@ I have learned that there are alot of things based on user data, hence it should
 
 Dec 11, 2024: I learned that HTTP-only cookies cannot be accessed in frontend.
 I am trying to make a custom MIDDLEWARE to keep track of the user using jwt tokens.
+
+Dec 12, 2024: I learned that if we "setStateVariable()" inside component will result infinite re-rendering.

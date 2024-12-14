@@ -1,6 +1,8 @@
+from datetime import timedelta
 from urllib import response
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
@@ -51,6 +53,7 @@ def login_check(request):
 
     if (user is not None):
         refresh = RefreshToken.for_user(user)
+        refresh.access_token.set_exp(lifetime=timedelta(hours=1))
         access_token = str(refresh.access_token)
         
         response = Response({
@@ -160,8 +163,9 @@ def facebook_login_check(request):
     
     return Response({'email': user_email, 'name': user_name, 'picture':picture_url})
 
-def logout(request):
-    response = Response({'message':'Logged out Successfully!'})
+@csrf_exempt
+def user_logout(request):
+    response = JsonResponse({'message':'Logged out Successfully!'})
     response.delete_cookie('jwt')
     return response
 
