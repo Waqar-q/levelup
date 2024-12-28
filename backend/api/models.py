@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 import uuid
@@ -53,7 +54,7 @@ class Course(models.Model):
     requirements = models.TextField("Requirements", max_length=1000)
     duration = models.DecimalField("Duration in Hrs", decimal_places=1, max_digits=4)
     date_of_creation = models.DateField("Creation Date", auto_now_add=True, blank=True, null=True)
-    thumbnail = models.ImageField("Thumbnail",upload_to="course_thumbnails/", blank=True, null=True, default="course_thumbnails/default-course.png")
+    thumbnail = models.ImageField("Thumbnail",upload_to="course_thumbnails/", blank=True, null=True, default="default_thumbnail.jpg")
     price = models.IntegerField("Price", blank=False, null=False)
 
     class LanguageChoices(models.TextChoices):
@@ -137,7 +138,7 @@ class Lecture(models.Model):
     lecture_name = models.CharField("Lecture Name", blank=False, max_length=100)
     module = models.ForeignKey(to=CourseModule,on_delete=models.CASCADE, related_name='lectures')
     video_link = models.URLField("Lecture Video Link", blank=True)
-    lecture_length = models.DurationField("Length of Lecture", null=False)
+    lecture_length = models.DurationField("Length of Lecture", null=True, default=timedelta(hours=45, minutes=20))
 
     def __str__(self):
         return self.lecture_name

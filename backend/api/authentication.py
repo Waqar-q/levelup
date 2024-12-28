@@ -8,7 +8,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 def create_refresh_token(user_id):
-    expiration_time = datetime.utcnow() + datetime.timedelta(hours=1)
+    expiration_time = datetime.utcnow() + datetime.timedelta(days=7)
 
     payload = {
         'user_id': user_id,

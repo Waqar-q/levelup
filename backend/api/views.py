@@ -202,13 +202,6 @@ class CourseViewSet(viewsets.ModelViewSet):
         response = self.get_paginated_response(serializer.data)
         return response
 
-
-        
-
-
-
-
-
 class CourseCategoryViewSet(viewsets.ModelViewSet):
     queryset = CourseCategory.objects.all()
     serializer_class = CourseCategorySerializer
@@ -219,15 +212,40 @@ class CourseSubcategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSubcategorySerializer
     pagination_class = LimitPagination
 
+    @action(detail=False, methods=['GET'])
+    def get_subcategories_by_category(self, request):
+        category = request.query_params.get('category')
+        subcategories= CourseSubcategory.objects.filter(category = category)
+        serializer = self.get_serializer(subcategories, many=True)
+        response = Response({"Subcategories":serializer.data})
+        return response
+
 class CourseModuleViewSet(viewsets.ModelViewSet):
     queryset = CourseModule.objects.all()
     serializer_class = CourseModuleSerializer
     pagination_class = LimitPagination
 
+    @action(detail=False, methods=['GET'], url_path='by-course')
+    def get_modules_by_course(self, request):
+        course_id = request.query_params.get('course_id')
+        modules= CourseModule.objects.filter(course = course_id)
+        serializer = self.get_serializer(modules, many=True)
+        response = Response({"Modules":serializer.data})
+        return response
+
 class LectureViewSet(viewsets.ModelViewSet):
     queryset = Lecture.objects.all()
     serializer_class = LectureSerializer
     pagination_class = LimitPagination
+
+    @action(detail=False, methods=['GET'], url_path='by-module')
+    def get_lectures_by_modules(self, request):
+        module_id = request.query_params.get('module_id')
+        lectures= Lecture.objects.filter(module = module_id)
+        serializer = self.get_serializer(lectures, many=True)
+        print("Module and it's Lectures:",module_id , serializer.data)
+        response = Response({"Lectures":serializer.data})
+        return response
 
 class DocumentViewSet(viewsets.ModelViewSet):
     queryset = Document.objects.all()
