@@ -452,7 +452,7 @@ const CoursePage: React.FC = () => {
                 </p>
               </div>
             </div>
-            <div className="course-content bg-blue-200 rounded-xl my-5 p-5">
+            <div className="course-content xl:bg-blue-200 rounded-xl xl:my-5 p-5">
               <div className="flex justify-between">
                 <div className="flex flex-col">
                   {fieldEdit.course_name ? (

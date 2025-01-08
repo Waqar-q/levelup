@@ -213,8 +213,8 @@ const Explore: React.FC = () => {
       <div className="explore min-h-[100vh] relative">
         <Header />
         <section className="explore-body py-16">
-          <p className="font-semibold text-xl py-2 px-3 border-b border-blue-200">
-            Hello, {localStorage.getItem("firstName") || "Guest"}
+          <p className="user-name font-semibold text-xl xl:text-3xl py-2 px-3 xl:p-5 flex ">
+            Hello, {localStorage.getItem("firstName") || "Guest"}...<p className="italic font-normal">  let's Level Up</p>
           </p>
 
           {/*--------------------------------------------My Courses---------------------------------*/}

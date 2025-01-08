@@ -26,8 +26,10 @@ h1, h2, h3, h4, h5, h6{
     @apply font-semibold;
 }
 
-h1{
-
+@media (min-width: 1280px){
+    .explore-heading{
+        @apply text-xl;
+    }
 }
 
 .btn, button{
@@ -160,14 +162,11 @@ label{
     @apply gap-4 overflow-x-scroll overflow-y-hidden p-5 ; 
 }
 
-@media (max-width: 1280px){
+
 .explore-body>div>.slider::-webkit-scrollbar, .course-page div>.slider::-webkit-scrollbar {
     display: none;
-  }}
-
-  .explore-body>div>.slider::-webkit-scrollbar, .course-page div>.slider::-webkit-scrollbar {
-    scrollbar-width: 2px;
   }
+
 
   .explore-body>div>.slider .card, .explore-body>div>.slider .box, .course-page div>.slider .card{
     @apply bg-white;
