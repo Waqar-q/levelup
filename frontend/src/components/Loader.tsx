@@ -1,4 +1,5 @@
 import React from "react";
+import Logo from "./Logo";
 
 interface LoaderProps{
     className?:string;
@@ -7,8 +8,12 @@ interface LoaderProps{
 
 const Loader: React.FC<LoaderProps> = ({className}) => {
   return (
-    <section className={`${className} w-full`}>
-      <div className="loader rounded-full h-5 border-2 overflow-clip bg-gray-300 m-4">
+    <section className={`${className} w-full items-center gap-0 justify-center flex  flex-col h-[100vh]`}>
+     
+        <Logo className="p-0 w-1/2"/>
+        Loading..
+     
+      {/*<div className="loader rounded-full h-5 border-2 overflow-clip bg-gray-300 m-4">
           <div className="loader-bg h-[200%] w-[100%]"></div>
         </div>
 
@@ -66,7 +71,7 @@ const Loader: React.FC<LoaderProps> = ({className}) => {
         <div className="loader rounded-full h-5 border-2 overflow-clip bg-gray-300 m-4">
           <div className="loader-bg h-[200%] w-[100%]"></div>
         </div>
-      </div>
+      </div>*/}
     </section>
   );
 };

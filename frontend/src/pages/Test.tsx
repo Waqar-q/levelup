@@ -36,12 +36,13 @@ export interface User {
 export interface Course {
   id: string;
   course_name: string;
+  instructor: string;
   tag_line: string;
   description: string;
   requirements: string;
   duration: number;
   date_of_creation: Date;
-  thumbnail: string;
+  thumbnail: File;
   price: number;
   language: string;
   category: string;
@@ -55,6 +56,13 @@ export interface CourseCategory {
   image: string;
 }
 
+export interface CourseSubcategory {
+  id: number;
+  description: string;
+  subcategory_name: string;
+  category: string;
+  image: string;
+}
 
 const Explore: React.FC = () => {
   const user_id = localStorage.getItem("user_id");
@@ -94,7 +102,6 @@ const Explore: React.FC = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log("Courses: ", data.results);
           setCourses(data.results);
         });
 
@@ -102,12 +109,11 @@ const Explore: React.FC = () => {
       fetch(process.env.REACT_APP_BASE_BACK_URL + `/api/users/${user_id}/`, {
         method: "GET",
         headers: {
-          'Accept': "application/json",
+          Accept: "application/json",
         },
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("User Data: ", data);
           setUser(data);
           return data.courses;
         })
@@ -115,8 +121,6 @@ const Explore: React.FC = () => {
           if (courses) {
             setHasOngoingCourses(true);
             const coursePromises = courses.map((course) => {
-              console.log("Course:", course);
-              
               return fetch(
                 process.env.REACT_APP_BASE_BACK_URL + `/api/courses/${course}/`,
                 {
@@ -125,17 +129,16 @@ const Explore: React.FC = () => {
                     Accept: "application/json",
                   },
                 }
-              ).then((response) => response.json())
-              .then((course) => {
-                course.progress = Math.round(Math.random()*100)
-                return course
-              })
+              )
+                .then((response) => response.json())
+                .then((course) => {
+                  course.progress = Math.round(Math.random() * 100);
+                  return course;
+                });
             });
 
             Promise.all(coursePromises).then((data) => {
-              
               setMyCourses(data);
-              
             });
           }
         });
@@ -152,7 +155,6 @@ const Explore: React.FC = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log("Free Courses: ", data.results);
           setFreeCourses(data.results);
         });
 
@@ -169,7 +171,6 @@ const Explore: React.FC = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          console.log("Trending Courses: ", data.results);
           setTrendingCourses(data.results);
         });
 
@@ -189,17 +190,14 @@ const Explore: React.FC = () => {
           return courseCategories;
         })
         .then((courseCategories) => {
-          console.log("Categories:", courseCategories);
           setCourseCategories(courseCategories);
         });
-
     } catch (error) {
       console.log(error);
     }
   };
 
   const CreateStyle = (progress: number) => {
-    
     const ProgressStyle: React.CSSProperties = {
       width: `${progress}%`,
     };
@@ -228,14 +226,15 @@ const Explore: React.FC = () => {
                   <h2 className="explore-heading-text">My Courses</h2>
                   <i className="material-icons">bookmarks</i>
                 </div>
-                <Link to="/my-courses" className="">
-                  See all
-                </Link>
               </div>
               <div className="slider flex min-h-48 overflow-x-scroll">
                 {myCourses.map((course) => (
-                  <Link to={`/course/${course.id}`} className="">
-                    <div className="card">
+                  <Link
+                    key={course.id}
+                    to={`/course/${course.id}`}
+                    className=""
+                  >
+                    <div key={course.id} className="card">
                       <h3 className="title py-4 min-h-20">
                         {course.course_name}
                       </h3>
@@ -243,11 +242,12 @@ const Explore: React.FC = () => {
                         <div
                           className={`progress h-3 absolute inset-0 bg-gradient-to-t from-secondary to-secondary_light rounded-full`}
                           style={CreateStyle(course.progress)}
-                        ><span className="progress-percent absolute text-sm right-0 -top-9 bg-accent_light text-light rounded-md p-1">
-                        {`${course.progress}%`}
-                      </span>
-                      </div>
-                        
+                        >
+                          <span className="progress-percent absolute text-sm right-0 -top-9 bg-accent_light text-light rounded-md p-1">
+                            {`${course.progress}%`}
+                          </span>
+                        </div>
+
                         <div className="progress-bar w-full h-3 rounded-full bg-clip-content shadow-inner shadow-gray-300"></div>
                       </div>
                     </div>
@@ -263,16 +263,17 @@ const Explore: React.FC = () => {
                 <h2 className="explore-heading-text">Categories</h2>
                 <i className="material-icons">category</i>
               </div>
-              <Link to="/categories" className="">
-                See all
-              </Link>
             </div>
-            <div className="slider">
+            <div className="slider flex">
               {courseCategories.map((category) => (
-                <div className="box w-1/2">
-                  <h3 className="title py-4">{category.category_name}</h3>
-                  <img src={category.image} className="w-20" alt="" />
-                </div>
+                <Link
+                  to={`/course-list/?filter=category&category=${category.id}`}
+                >
+                  <div className="box w-1/2 min-h-64">
+                    <h3 className="title py-4">{category.category_name}</h3>
+                    <img src={category.image} className="w-20" alt="" />
+                  </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -284,7 +285,10 @@ const Explore: React.FC = () => {
                 <h2 className="explore-heading-text">Trending</h2>
                 <i className="material-icons">trending_up</i>
               </div>
-              <Link to="/trending" className="text-gray-500 last">
+              <Link
+                to="/course-list/?filter=trending"
+                className="text-gray-500 last"
+              >
                 See all
               </Link>
             </div>
@@ -305,13 +309,16 @@ const Explore: React.FC = () => {
                 <h2 className="explore-heading-text">Free Courses</h2>
                 <i className="material-icons">local_offer</i>
               </div>
-              <Link to="/free-courses" className="text-gray-500 last">
+              <Link
+                to="/course-list/?filter=free"
+                className="text-gray-500 last"
+              >
                 See all
               </Link>
             </div>
             <div className="slider flex min-h-96 overflow-x-scroll">
               {freeCourses.map((course) => (
-                <Link to={`/course/${course.id}`} className="">
+                <Link key={course.id} to={`/course/${course.id}`} className="">
                   <Card key={course.id} course={course} className="h-96" />
                 </Link>
               ))}
@@ -326,7 +333,7 @@ const Explore: React.FC = () => {
                 <h2 className="explore-heading-text">All Courses</h2>
                 <i className="material-icons">menu_book</i>
               </div>
-              <Link to="/courses" className="text-gray-500 last">
+              <Link to="/course-list/" className="text-gray-500 last">
                 See all
               </Link>
             </div>

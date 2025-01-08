@@ -11,3 +11,7 @@ Dec 11, 2024: I learned that HTTP-only cookies cannot be accessed in frontend.
 I am trying to make a custom MIDDLEWARE to keep track of the user using jwt tokens.
 
 Dec 12, 2024: I learned that if we "setStateVariable()" inside component will result infinite re-rendering.
+
+Dec 21, 2024: I have countered numerous problems due to the timing of fetch() overlapping with other fetches and long .then() chains. I thought code will excecute in sequence if .then is used. But state variables are queued by react irrespective of .then().
+
+Dec 25, 2024: After 2 days i realised that setState({...variable, key:value}) is different from setState(variable => ({...variable, key:value})) as due to asynchronous nature of JS, former updates using current state of variable, whereas the latter updates after any other state changes in sequence have occured.

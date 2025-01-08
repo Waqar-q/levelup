@@ -202,6 +202,25 @@ class CourseViewSet(viewsets.ModelViewSet):
         response = self.get_paginated_response(serializer.data)
         return response
 
+    @action(detail=False, methods=['GET'], url_path='search')
+    def search(self, request):
+        query = request.query_params.get('query')
+        searched_courses = Course.objects.filter(course_name__icontains=query).order_by("-views")
+        page = self.paginate_queryset(searched_courses)
+        serializer = self.get_serializer(page, many=True)
+        response = self.get_paginated_response(serializer.data)
+        print(serializer.data)
+        return response
+    
+    @action(detail=False, methods=['GET'], url_path='category')
+    def category(self, request):
+        category= CourseCategory.objects.get(id=request.query_params.get('category'))
+        courses = Course.objects.filter(category=category).order_by("-views")
+        page = self.paginate_queryset(courses)
+        serializer = self.get_serializer(page, many=True)
+        response = self.get_paginated_response(serializer.data)
+        return response
+
 class CourseCategoryViewSet(viewsets.ModelViewSet):
     queryset = CourseCategory.objects.all()
     serializer_class = CourseCategorySerializer

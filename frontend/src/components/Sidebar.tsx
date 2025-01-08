@@ -29,10 +29,10 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
           opened ? "open" : "close"
         } bg-accent text-light absolute left-0 top-0 w-[70%] h-[100vh] max-w-[500px] -translate-x-[80%]`}
       >
-        <div className="flex justify-between items-center p-5">
-          <Logo />
+        <div className="flex justify-between items-center p-5 bg-light">
+          <Logo className="w-14" />
           <a onClick={toggleSidebar}>
-            <i className="fas fa-arrow-left text-3xl mx-5 "></i>
+            <i className="fas fa-arrow-left text-3xl mx-5 text-accent"></i>
           </a>
         </div>
 

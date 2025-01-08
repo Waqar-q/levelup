@@ -111,7 +111,7 @@ const Profile: React.FC = () => {
       <section className="profile">
         <ToastContainer/>
         <Header page='Profile'/>
-            <form action="" className="p-5 pt-16">
+            <form action="" className="p-5 pt-16 flex flex-col justify-self-center">
                 <input type="text" placeholder="First Name" name="first_name" onChange={handleInputChange} value={formData.first_name}/>
                 <input type="text" placeholder="Last Name" name="last_name" onChange={handleInputChange} value={formData.last_name}/>
                 <input type="tel" name="phone" id=""  placeholder="Contact Number with Country Code" onChange={handleInputChange} value={formData.phone}/>

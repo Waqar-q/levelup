@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { ReactElement, useEffect, useRef } from "react";
 import { useState } from "react";
 import Loader from "../components/Loader";
 import Input from "../components/Input_Field";
@@ -10,11 +10,30 @@ import Header from "../components/Header";
 import Card from "../components/Card";
 import { toast } from "react-toastify";
 import getCookie from "../utilities/getCookie";
+import BottomMenu from "../components/Bottom_Menu";
+
+export interface CourseModule {
+  id: string;
+  module_name: string;
+  description: string;
+  course: string;
+}
+
+export interface Lecture {
+  id: string;
+  lecture_name: string;
+  module: string;
+  video_link: string;
+  lecture_length: string;
+}
 
 const CoursePage: React.FC = () => {
   const [user, setUser] = useState<User>();
   const [course, setCourse] = useState<Course>();
   const [courseState, setCourseState] = useState<Course>();
+  const [modules, setModules] = useState<CourseModule[]>([]);
+  const [lectures, setLectures] = useState<Lecture[]>([]);
+  const [instructor, setInstructor] = useState<User>();
   const [relatedCourses, setRelatedCourses] = useState<Course[]>([]);
   const { id } = useParams<{ id: string }>();
   const [thumbnail, setThumbnail] = useState(new Image());
@@ -23,7 +42,8 @@ const CoursePage: React.FC = () => {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [isEnrolled, setEnrolled] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
-
+  const [openedModule, setOpenedModule] = useState<string>();
+  const [loadingModules, setLoadingModules] = useState(true);
 
   const [fieldEdit, setFieldEdit] = useState({
     course_name: false,
@@ -34,12 +54,38 @@ const CoursePage: React.FC = () => {
     requirements: false,
   });
 
-
   useEffect(() => {
-    fetchData();
+    setEnrolled(false);
+    setCourse({} as Course);
+    setCourseState({} as Course);
+    setModules([]);
+    setLectures([]);
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }, [id]);
 
-  const fetchData = () => {
+  useEffect(() => {
+    if (isEnrolled) {
+      fetchCourseModules();
+    }
+  }, [isEnrolled]);
+
+  useEffect(() => {
+    const fetchDataIfNeeded = async () => {
+      if (!course?.course_name) {
+        await fetchData();
+        if (user && user.courses.includes(id || "null")) {
+          setEnrolled(true);
+        }
+      }
+    };
+
+    fetchDataIfNeeded();
+  }, [course, user, isEnrolled]);
+
+  const fetchData = async () => {
     try {
       /* Fetching THE Course*/
       fetch(process.env.REACT_APP_BASE_BACK_URL + `/api/courses/${id}/`, {
@@ -58,7 +104,7 @@ const CoursePage: React.FC = () => {
         })
         .then((course) => {
           thumbnail.src = course.thumbnail;
-          if (course.instructor == user_id){
+          if (course.instructor == user_id) {
             setIsOwner(true);
           }
 
@@ -87,34 +133,114 @@ const CoursePage: React.FC = () => {
               console.log("Related Courses:", data);
               setRelatedCourses(data.results);
             });
-        
-        /* Fetching User Data*/
-        fetch(
-          process.env.REACT_APP_BASE_BACK_URL +
-            `/api/users/${user_id}/`,
-          {
-            method: "GET",
-            headers: {
-              Accept: "application/json",
-            },
-          }
-        )
-          .then((response) => {
-            return response.json();
-          })
-          .then((user) => {
-            console.log("User:", user);
-            setUser(user);
-            if (user.courses.includes(id))
-            {setEnrolled(true);}
-          });
 
-          });
-      
+          /* Fetching User Data */
+          fetch(
+            process.env.REACT_APP_BASE_BACK_URL + `/api/users/${user_id}/`,
+            {
+              method: "GET",
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          )
+            .then((response) => {
+              return response.json();
+            })
+            .then((user) => {
+              console.log("User:", user);
+              setUser(user);
+              if (user.courses.includes(id)) {
+                setEnrolled(true);
+              }
+              return user;
+            });
+
+          /* Fetching Instructor Data */
+          fetch(
+            process.env.REACT_APP_BASE_BACK_URL +
+              `/api/users/${course.instructor}/`,
+            {
+              method: "GET",
+              headers: {
+                Accept: "application/json",
+              },
+            }
+          )
+            .then((response) => {
+              return response.json();
+            })
+            .then((instructor_data) => {
+              console.log("Instructor:", instructor_data);
+              setInstructor(instructor_data);
+            });
+        });
+      return user;
     } catch (error) {
       console.log(error);
     }
   };
+
+  /*Fetching Modules*/
+  const fetchCourseModules = () => {
+    return fetch(
+      process.env.REACT_APP_BASE_BACK_URL +
+        "/api/course-modules/by-course/?course_id=" +
+        id,
+      {
+        method: "GET",
+        headers: {
+          "X-CSRFToken": csrftoken,
+          Accept: "application/json",
+        },
+        credentials: "include",
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        return response.json();
+      })
+      .then((data) => {
+        setModules(data["Modules"]);
+        return data["Modules"];
+      })
+      .then((moduleData: CourseModule[]) => {
+        if (moduleData) {
+          const fetchLectures = () =>
+            moduleData.map((moduleSingle) => {
+              /*Fetching Lectures*/
+              return fetch(
+                process.env.REACT_APP_BASE_BACK_URL +
+                  "/api/lectures/by-module/?module_id=" +
+                  moduleSingle.id,
+                {
+                  method: "GET",
+                  headers: {
+                    "X-CSRFToken": csrftoken,
+                    Accept: "application/json",
+                  },
+                  credentials: "include",
+                }
+              )
+                .then((response) => {
+                  console.log(response);
+                  return response.json();
+                })
+                .then((data) => {
+                  return data["Lectures"];
+                });
+            });
+          Promise.all(fetchLectures()).then((allLecturesArrays) => {
+            const combinedLectures = allLecturesArrays.flat();
+            setLectures(combinedLectures);
+          });
+        }
+      });
+  };
+
+  {
+    loadingModules ? <Loader /> : "";
+  }
 
   const editClick = (field: string) => {
     setFieldEdit({
@@ -157,43 +283,57 @@ const CoursePage: React.FC = () => {
   };
 
   const toggleEnrollDialog = () => {
-    
-    if (dialogRef.current?.open){
-      document.body.classList.remove('no-scroll');
-        dialogRef.current?.close();}
+    if (dialogRef.current?.open) {
+      document.body.classList.remove("no-scroll");
+      dialogRef.current?.close();
+    } else {
+      document.body.classList.add("no-scroll");
+      dialogRef.current?.showModal();
+    }
+  };
 
-    else {
-      document.body.classList.add('no-scroll');
-        dialogRef.current?.showModal()};
-  }
-
-  const enroll =async (id: string | undefined) => {
-    try{
+  const enroll = async (id: string | undefined) => {
+    try {
       const response = await fetch(
-        process.env.REACT_APP_BASE_FRONT_URL + "/api/users/enroll/?id=" + id,{
+        process.env.REACT_APP_BASE_FRONT_URL + "/api/users/enroll/?id=" + id,
+        {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": csrftoken,
           },
-          credentials: 'include',
-      })
-      
-      if(!response.ok){
-        toast.error("Something went wrong.")
-        throw new Error("Enroll response not OK.")
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Something went wrong.");
+        throw new Error("Enroll response not OK.");
+      } else {
+        const data = await response.json();
+        console.log("Enroll:", data);
+        setEnrolled(true);
+        toggleEnrollDialog();
       }
-      else{
-        const data = await response.json()
-        console.log("Enroll:",data)
-        toggleEnrollDialog()
-        
-      }
+    } catch (error) {
+      console.log(error);
     }
-    catch(error){
-      console.log(error)
+  };
+
+  const extractVideoId = (url: string) => {
+    const regExp =
+      /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = url.match(regExp);
+    return match ? match[1] : null;
+  };
+
+  const toggleModule = (module_id: string) => {
+    if (openedModule == module_id) {
+      setOpenedModule("");
+    } else {
+      setOpenedModule(module_id);
     }
-  }
+  };
 
   return (
     <section className="course-page">
@@ -203,13 +343,15 @@ const CoursePage: React.FC = () => {
             page="Course"
             className="z-[900]"
             options={[
-              { name: "Edit", link: `/edit/?course=${course.id}` },
+              ...(isOwner
+                ? [{ name: "Edit Modules", link: `/edit-module/${course.id}` }]
+                : []),
               { name: "Delete", link: `/delete/?course=${course.id}` },
             ]}
           />
-          <div className="pb-16">
+          <div className="xl:pt-20 xl:pb-0 pb-36 xl:mx-64">
             <div
-              className="course-page-thumbnail w-full relative"
+              className="course-page-thumbnail xl:hidden w-full relative"
               style={{
                 backgroundImage: `url(${course.thumbnail})`,
                 backgroundAttachment: "fixed",
@@ -220,7 +362,97 @@ const CoursePage: React.FC = () => {
                 minHeight: `${thumbnail.height - 40}px`,
               }}
             ></div>
-            <div className="course-content p-5">
+            <div className="flex justify-between">
+              <img
+                src={thumbnail.src}
+                className={`course-page-thumbnail shadow-lg shadow-accent_light hidden xl:flex relative rounded-xl overflow-clip`}
+              ></img>
+              <div className="wrapper hidden xl:flex flex-col gap-5 p-5 items-end justify-center ">
+                <div className="rating flex py-1 pl-2 items-center text-3xl">
+                  <p className="font-semibold pr-1 pt-1">4.9</p>
+                  <i className="material-icons text-amber-500">star</i>
+                </div>
+                <div className="views flex py-1 pl-2 items-center justify-between text-2xl text-gray-500">
+                  <p className="pr-1">{course.views}</p>
+                  <i className="material-icons-outlined text-2xl">visibility</i>
+                </div>
+
+                {fieldEdit.language ? (
+                  <div className=" language flex items-center relative">
+                    <input
+                      name="language"
+                      className="flex text-2xl p-1 items-center "
+                      autoFocus
+                      type="text"
+                      onChange={(e) =>
+                        setCourseState({
+                          ...course,
+                          [e.currentTarget.name]: e.target.value,
+                        })
+                      }
+                      value={courseState?.language}
+                    />
+                    <span>
+                      <button
+                        className="tick-button"
+                        onClick={(e) =>
+                          tickClick(
+                            e.currentTarget
+                              .closest(".language")
+                              ?.querySelector("input")?.name || "",
+                            e.currentTarget
+                              .closest(".language")
+                              ?.querySelector("input")?.value || ""
+                          )
+                        }
+                      >
+                        <i className="material-icons text-green-500">check</i>
+                      </button>
+                    </span>
+                    <span>
+                      <button
+                        className="close-button"
+                        onClick={(e) => {
+                          editClick("");
+                        }}
+                      >
+                        <i className="material-icons text-red-500">close</i>
+                      </button>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-center relative text-2xl">
+                    <p className="language flex p-1 items-center ">
+                      {course.language}
+                    </p>
+                    {isOwner && (
+                      <span>
+                        <button
+                          name="language"
+                          className="edit-button"
+                          onClick={(e) => editClick("language")}
+                        >
+                          <i className="material-icons-outlined text-accent">
+                            edit
+                          </i>
+                        </button>
+                      </span>
+                    )}
+                    <i className="material-icons-outlined ">language</i>
+                  </div>
+                )}
+                <p className="instructor flex text-2xl my-1 text-gray-500">
+                  by{" "}
+                  <img
+                    className="w-5 h-5 mx-1 justify-self-center rounded-full"
+                    src={instructor?.profile_picture || ""}
+                    alt=""
+                  />{" "}
+                  {instructor?.first_name} {instructor?.last_name}
+                </p>
+              </div>
+            </div>
+            <div className="course-content bg-blue-200 rounded-xl my-5 p-5">
               <div className="flex justify-between">
                 <div className="flex flex-col">
                   {fieldEdit.course_name ? (
@@ -266,20 +498,22 @@ const CoursePage: React.FC = () => {
                     </div>
                   ) : (
                     <div className="flex items-center relative">
-                      <h2 className="title py-2 text-xl text-dark">
+                      <h2 className="title py-2 text-xl xl:text-3xl text-dark">
                         {course.course_name}
                       </h2>
-                      {isOwner && <span>
-                        <button
-                          name="courseName"
-                          className="edit-button"
-                          onClick={(e) => editClick("course_name")}
-                        >
-                          <i className="material-icons-outlined text-accent">
-                            edit
-                          </i>
-                        </button>
-                      </span>}
+                      {isOwner && (
+                        <span>
+                          <button
+                            name="courseName"
+                            className="edit-button"
+                            onClick={(e) => editClick("course_name")}
+                          >
+                            <i className="material-icons-outlined text-accent">
+                              edit
+                            </i>
+                          </button>
+                        </span>
+                      )}
                     </div>
                   )}
 
@@ -329,21 +563,23 @@ const CoursePage: React.FC = () => {
                       <p className="tagline text-sm italic text-gray-800">
                         {course.tag_line}
                       </p>
-                      {isOwner && <span>
-                        <button
-                          name="tagline"
-                          className="edit-button"
-                          onClick={(e) => editClick("tag_line")}
-                        >
-                          <i className="material-icons-outlined text-accent">
-                            edit
-                          </i>
-                        </button>
-                      </span>}
+                      {isOwner && (
+                        <span>
+                          <button
+                            name="tagline"
+                            className="edit-button"
+                            onClick={(e) => editClick("tag_line")}
+                          >
+                            <i className="material-icons-outlined text-accent">
+                              edit
+                            </i>
+                          </button>
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>
-                <div className="wrapper flex flex-col items-end">
+                <div className="wrapper flex flex-col items-end xl:hidden">
                   <div className="rating flex py-1 pl-2 items-center">
                     <p className="font-semibold pr-1 pt-1">4.9</p>
                     <i className="material-icons text-amber-500">star</i>
@@ -401,35 +637,44 @@ const CoursePage: React.FC = () => {
                       <p className="language flex text-sm p-1 items-center ">
                         {course.language}
                       </p>
-                      {isOwner && <span>
-                        <button
-                          name="language"
-                          className="edit-button"
-                          onClick={(e) => editClick("language")}
-                        >
-                          <i className="material-icons-outlined text-accent">
-                            edit
-                          </i>
-                        </button>
-                      </span>}
+                      {isOwner && (
+                        <span>
+                          <button
+                            name="language"
+                            className="edit-button"
+                            onClick={(e) => editClick("language")}
+                          >
+                            <i className="material-icons-outlined text-accent">
+                              edit
+                            </i>
+                          </button>
+                        </span>
+                      )}
+                      <i className="material-icons-outlined">language</i>
                     </div>
                   )}
-
-                  <i className="material-icons-outlined">language</i>
                 </div>
               </div>
 
               <div className="flex w-full justify-between items-center my-3 ">
-                <div className="duration flex text-sm my-1 text-gray-500 items-center">
+                <div className="duration flex text-sm xl:text-xl my-1 text-gray-500 items-center">
                   <i className="material-icons-outlined pr-2">access_time</i>{" "}
                   <p>{course.duration} Hrs</p>
                 </div>
-                <p className="instructor text-sm my-1 text-gray-500">
-                  by Raj Kapoor
-                </p>
+                <>
+                  <p className="instructor flex text-sm my-1 text-gray-500 xl:hidden">
+                    by{" "}
+                    <img
+                      className="w-5 h-5 mx-1 justify-self-center rounded-full"
+                      src={instructor?.profile_picture || ""}
+                      alt=""
+                    />{" "}
+                    {instructor?.first_name} {instructor?.last_name}
+                  </p>
+                </>
               </div>
 
-              <div className="flex price w-min my-3 bg-secondary_light rounded-md font-bold text-white px-3 py-1 items-center">
+              <div className="flex price xl:text-3xl w-min my-3 bg-secondary_light rounded-md font-bold text-white px-3 py-1 items-center">
                 <i className="material-icons-outlined text-md">
                   currency_rupee
                 </i>
@@ -437,7 +682,7 @@ const CoursePage: React.FC = () => {
                   <div className="price flex items-center relative">
                     <input
                       name="price"
-                      className="border-none text-xl"
+                      className="border-none "
                       autoFocus
                       type="text"
                       onChange={(e) =>
@@ -478,29 +723,31 @@ const CoursePage: React.FC = () => {
                   </div>
                 ) : (
                   <div className="flex items-center relative">
-                    <p className="text-xl">{course.price}</p>
-                    {isOwner && <span>
-                      <button
-                        className="edit-button"
-                        onClick={(e) => editClick("price")}
-                      >
-                        <i className="material-icons-outlined text-accent">
-                          edit
-                        </i>
-                      </button>
-                    </span>}
+                    <p className="">{course.price}</p>
+                    {isOwner && (
+                      <span>
+                        <button
+                          className="edit-button"
+                          onClick={(e) => editClick("price")}
+                        >
+                          <i className="material-icons-outlined text-accent">
+                            edit
+                          </i>
+                        </button>
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
 
-              <div className="wrapper my-3">
-                <h4>Description</h4>
+              <div className="wrapper my-3 ">
+                <h4 className="xl:text-2xl">Description</h4>
 
                 {fieldEdit.description ? (
-                  <div className="description flex items-center relative">
+                  <div className="description flex items-center relative xl:text-xl text-sm">
                     <textarea
                       name="description"
-                      className="border-none description my-1 text-sm"
+                      className="border-none description my-1"
                       autoFocus
                       onChange={(e) =>
                         setCourseState({
@@ -537,32 +784,32 @@ const CoursePage: React.FC = () => {
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center relative">
-                    <p className="description my-1 text-sm">
-                      {course.description}
-                    </p>
-                    {isOwner && <span>
-                      <button
-                        name="description"
-                        className="edit-button"
-                        onClick={(e) => editClick("description")}
-                      >
-                        <i className="material-icons-outlined text-accent">
-                          edit
-                        </i>
-                      </button>
-                    </span>}
+                  <div className="flex items-center relative xl:text-xl text-sm">
+                    <p className="description my-1">{course.description}</p>
+                    {isOwner && (
+                      <span>
+                        <button
+                          name="description"
+                          className="edit-button"
+                          onClick={(e) => editClick("description")}
+                        >
+                          <i className="material-icons-outlined text-accent">
+                            edit
+                          </i>
+                        </button>
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
               <div className="wrapper my-3">
-                <h4>Requirements</h4>
+                <h4 className="xl:text-2xl">Requirements</h4>
 
                 {fieldEdit.requirements ? (
-                  <div className="requirements flex items-center relative">
+                  <div className="requirements flex items-center relative xl:text-xl text-sm">
                     <textarea
                       name="requirements"
-                      className="border-none requirements my-1 text-sm whitespace-pre-line"
+                      className="border-none requirements my-1 whitespace-pre-line"
                       autoFocus
                       onChange={(e) =>
                         setCourseState({
@@ -601,52 +848,165 @@ const CoursePage: React.FC = () => {
                     </span>
                   </div>
                 ) : (
-                  <div className="flex items-center relative">
-                    <p className="requirements my-1 text-sm whitespace-pre-line">
+                  <div className="flex items-center relative xl:text-xl text-sm">
+                    <p className="requirements my-1 whitespace-pre-line">
                       {String(course.requirements).replace(/\\n/g, "\n")}
                     </p>
-                    {isOwner && <span>
-                      <button
-                        name="requirements"
-                        className="edit-button"
-                        onClick={(e) => editClick("requirements")}
-                      >
-                        <i className="material-icons-outlined text-accent">
-                          edit
-                        </i>
-                      </button>
-                    </span>}
+                    {isOwner && (
+                      <span>
+                        <button
+                          name="requirements"
+                          className="edit-button"
+                          onClick={(e) => editClick("requirements")}
+                        >
+                          <i className="material-icons-outlined text-accent">
+                            edit
+                          </i>
+                        </button>
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
 
-              { !isEnrolled && (
-              <div className="flex fixed h-20 items-center justify-center border-t bottom-0 left-0 w-full bg-white px-5">
-                <button className="w-full" onClick={(e) => {e.preventDefault(); toggleEnrollDialog()}}>Enroll</button>
-                <dialog className="dialog enroll-dialog z-[999]" ref={dialogRef}>
-                <p className="my-5 text-center">Are you sure you want to Enroll?</p>
-                <div className="flex w-full">
-                    <button type="button" onClick={toggleEnrollDialog} autoFocus>Cancel</button>
-                    <button onClick={() => enroll(id)}>Enroll</button>
+              {!isEnrolled && (
+                <div className="xl:flex hidden h-20 items-center justify-self-end w-1/3 px-5">
+                  <button
+                    className="w-full"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleEnrollDialog();
+                    }}
+                  >
+                    Enroll Now
+                  </button>
+                  <dialog
+                    className="dialog enroll-dialog z-[999]"
+                    ref={dialogRef}
+                  >
+                    <p className="my-5 text-center">
+                      Are you sure you want to Enroll?
+                    </p>
+                    <div className="flex w-full">
+                      <button
+                        type="button"
+                        onClick={toggleEnrollDialog}
+                        autoFocus
+                      >
+                        Cancel
+                      </button>
+                      <button onClick={() => enroll(id)}>Enroll</button>
                     </div>
-                </dialog>
-              </div>)
-      }
+                  </dialog>
+                </div>
+              )}
+              {(isEnrolled || isOwner) && modules?.length > 0 && (
+                <div className="wrapper my-3">
+                  <h4>Modules</h4>
+                  {modules.map((module) => (
+                    <div className="module">
+                      <div
+                        key={module.module_name}
+                        onClick={(e) => toggleModule(module.id)}
+                        className="module-box border-b"
+                      >
+                        <div className="flex justify-between p-5 w-full font-semi-bold bg-gray-00">
+                          <p className="module-name ">{module.module_name}</p>
+                          <i
+                            className={`material-icons justify-items-center transition-all duration-500 ease-in-out ${
+                              openedModule == module.id ? "rotate-90" : ""
+                            }`}
+                          >
+                            keyboard_arrow_right
+                          </i>
+                        </div>
+                      </div>
+                      <div
+                        key={module.id}
+                        className={`all-lectures ${
+                          openedModule == module.id ? "open" : "close"
+                        } transition-all duration-7000 ease-in-out`}
+                      >
+                        {lectures &&
+                          lectures.map(
+                            (lecture) =>
+                              lecture.module == module.id && (
+                                <div key={lecture.id} className="lecture">
+                                  <a
+                                    className="image-wrapper"
+                                    href={lecture.video_link}
+                                  >
+                                    <img
+                                      src={`https://img.youtube.com/vi/${extractVideoId(
+                                        lecture.video_link
+                                      )}/default.jpg`}
+                                      alt=""
+                                    />
+                                  </a>
+                                  <a
+                                    className="lecture-name underline"
+                                    href={lecture.video_link}
+                                  >
+                                    {lecture.lecture_name}
+                                  </a>
+                                </div>
+                              )
+                          )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {!isEnrolled && (
+                <div className="flex xl:hidden fixed h-20 items-center justify-center border-t bottom-16 left-0 w-full bg-white px-5">
+                  <button
+                    className="w-full"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      toggleEnrollDialog();
+                    }}
+                  >
+                    Enroll
+                  </button>
+                  <dialog
+                    className="dialog enroll-dialog z-[999]"
+                    ref={dialogRef}
+                  >
+                    <p className="my-5 text-center">
+                      Are you sure you want to Enroll?
+                    </p>
+                    <div className="flex w-full">
+                      <button
+                        type="button"
+                        onClick={toggleEnrollDialog}
+                        autoFocus
+                      >
+                        Cancel
+                      </button>
+                      <button onClick={() => enroll(id)}>Enroll</button>
+                    </div>
+                  </dialog>
+                </div>
+              )}
 
               {/*---------------------------Sliders----------------------------------*/}
               <div className="related-courses">
                 <div className="course-heading-wrapper">
-                  <div className="course-heading">
+                  <div className="course-heading xl:text-2xl">
                     <h2 className="course-heading-text">Related Courses</h2>
                     <i className="material-icons">auto_awesome</i>
                   </div>
-                  <Link to="/category" className="text-gray-500 last">
+                  <Link
+                    to={`/course-list/?filter=category&category=${course.category}`}
+                    className="text-gray-500 last"
+                  >
                     See all
                   </Link>
                 </div>
-                <div className="slider flex min-h-96 overflow-x-scroll">
+                <div className="slider flex grid-cols-3 xl:grid min-h-96 xl:overflow-x-clip">
                   {relatedCourses.map((course) => (
-                    <Link to={`/course/${course.id}/`} className="">
+                    <Link to={`/course/${course.id}/`} className="xl:scale-90">
                       <Card key={course.id} course={course} />
                     </Link>
                   ))}
@@ -654,6 +1014,7 @@ const CoursePage: React.FC = () => {
               </div>
             </div>
           </div>
+          <BottomMenu />
         </>
       )}
     </section>

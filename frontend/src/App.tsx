@@ -12,6 +12,10 @@ import Profile from "./pages/Profile";
 import CoursePage from "./pages/Course";
 import Signup from "./pages/Sign Up";
 import Role from "./pages/Role";
+import NewCourse from "./pages/NewCourse";
+import NewModule from "./pages/EditModule";
+import EditModule from "./pages/EditModule";
+import CourseList from "./pages/CourseList";
 
 declare global{
     interface Window{
@@ -51,9 +55,9 @@ const App: React.FC = () => {
                 <Route path="/notifications" element={<Notifications/>}/>
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/course/:id" element={<CoursePage/>}/>
-
-
-
+                <Route path="/new-course/" element={<NewCourse/>}/>
+                <Route path="/edit-module/:id" element={<EditModule/>}/>
+                <Route path="/course-list/" element={<CourseList/>}/>
             </Routes>
         </Router>
     )

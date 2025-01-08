@@ -36,8 +36,12 @@ h1{
     background: var(--orange-gradient-background);
 }
 
-input{
-    @apply border border-accent_light p-4 rounded-xl w-full max-w-96;
+input, textarea{
+    @apply border border-accent_light p-4 rounded-xl w-full max-w-96 focus:outline-none;
+}
+
+label{
+    @apply font-semibold;
 }
 
 .sidebar .open{
@@ -89,16 +93,20 @@ input{
     left-[50%] top-[1/2] -translate-x-[50%] -translate-y-[50%] rounded-2xl w-2/3 max-w-96;
 }
 
-.settings>.profile-settings li{
+.settings .profile-settings li{
     @apply flex px-5 h-16 items-center hover:text-light hover:bg-accent_light;
 }
 
-.settings>.profile-settings li i{
+.settings .profile-settings li i{
     @apply mx-3;
 }
 
-.settings>.profile-settings>p{
+.settings .profile-settings>p{
     @apply bg-gray-100 px-5 text-sm text-gray-400;
+}
+
+.settings .profile-settings .setting-item{
+    @apply xl:rounded-md xl:mx-4;
 }
 
 .profile form *{
@@ -109,9 +117,14 @@ input{
 
 /* Explore Page Style*/
 
-.explore-body>div, .course-page>div{
+.explore-body .slider, .course-page .slider{
     background-image: linear-gradient(to top,white 5%, lightblue, white 50%);
 }
+
+@media (min-width: 1280px){
+.course-page .slider{
+    background-image: none;
+}}
 
 .explore-heading-wrapper, .course-heading-wrapper{
     @apply items-center flex w-full justify-between px-5;
@@ -134,14 +147,26 @@ input{
     @apply text-gray-500;
 }
 
+@media (max-width: 1280px){
 .explore-body>div>.slider, .course-page div>.slider{
     
     scrollbar-width: none;
     @apply flex gap-4 overflow-scroll p-5 ; 
+}}
+
+.explore-body>div>.slider, .course-page div>.slider{
+    
+    scrollbar-width: 2px;
+    @apply gap-4 overflow-x-scroll overflow-y-hidden p-5 ; 
 }
 
+@media (max-width: 1280px){
 .explore-body>div>.slider::-webkit-scrollbar, .course-page div>.slider::-webkit-scrollbar {
     display: none;
+  }}
+
+  .explore-body>div>.slider::-webkit-scrollbar, .course-page div>.slider::-webkit-scrollbar {
+    scrollbar-width: 2px;
   }
 
   .explore-body>div>.slider .card, .explore-body>div>.slider .box, .course-page div>.slider .card{
@@ -150,13 +175,42 @@ input{
 
   /*Course Page*/
 
-
+  
+  @media (max-width: 1280px) {
   .course-page header{
     background-image: linear-gradient(to bottom, #313030,#ffffff00 80%);
     background-color: transparent;
     border: none;
     color: var(--light);
 
+  }}
+
+  .course-page .lecture, .edit-module .lecture{
+    @apply flex items-center;
+  }
+
+  .course-page .module .all-lectures.close, .edit-module .module .all-lectures.close{
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .course-page .module .all-lectures.open, .edit-module .module .all-lectures.open{
+    max-height: auto;
+    opacity: 1;
+  }
+
+  
+
+  .course-page .lecture a.lecture-name, .edit-module .lecture a.lecture-name{
+    @apply p-4;
+  }
+  .course-page .lecture a.image-wrapper, .edit-module .lecture a.image-wrapper{
+    @apply flex rounded-md h-9 items-center overflow-clip;
+  }
+
+  .course-page .lecture img, .edit-module .lecture img{
+    @apply min-w-16 w-16;
   }
 
   /*Course Page Edit Styles*/
@@ -190,3 +244,6 @@ input{
 .role button{
     @apply rounded-3xl
 }
+
+/*New Module Page Style*/
+
