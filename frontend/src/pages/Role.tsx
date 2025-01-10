@@ -47,13 +47,13 @@ const Role: React.FC = () => {
   return (
     <div className="role ">
       <ToastContainer/>
-        <Header page="Select role"/>
-        <div className="flex flex-col justify-center items-center gap-12 h-[100vh]">
-        <button name="student" className="student w-2/3 flex flex-col items-center gap-4" onClick={(e) => handleClick(e.currentTarget.name)}>
+        <Header className="z-[999]" page="Select role"/>
+        <div className="flex flex-col xl:flex-row justify-center items-center gap-12 h-[100vh] z-50">
+        <button name="student" className="student w-2/3 xl:w-1/4 flex flex-col items-center gap-4" onClick={(e) => handleClick(e.currentTarget.name)}>
             <p className="text-2xl">Student</p>
             <img className="w-2/3" src={student} alt="" />
         </button>
-        <button name='instructor' className="instructor w-2/3 flex flex-col items-center gap-4" onClick={(e) => handleClick(e.currentTarget.name)}>
+        <button name='instructor' className="instructor w-2/3 xl:w-1/4 flex flex-col items-center gap-4" onClick={(e) => handleClick(e.currentTarget.name)}>
             <p className="text-2xl">Instructor</p>
             <img className="w-2/3" src={instructor} alt="" />
         </button>

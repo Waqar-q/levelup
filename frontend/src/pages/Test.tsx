@@ -118,7 +118,7 @@ const Explore: React.FC = () => {
           return data.courses;
         })
         .then((courses: string[]) => {
-          if (courses) {
+          if (courses.length > 0) {
             setHasOngoingCourses(true);
             const coursePromises = courses.map((course) => {
               return fetch(

@@ -138,11 +138,11 @@ const Settings: React.FC = () => {
                 <p>Logout</p>
               </li>
             </a>
-            <dialog className="dialog logout-dialog z-[99999]" ref={dialogRef}>
+            <dialog className="dialog logout-dialog z-[99999] absolute " ref={dialogRef}>
               <p className="my-5 text-center">
                 Are you sure you want to log out?
               </p>
-              <div className="flex w-full">
+              <div className="flex w-full justify-center">
                 <button type="button" onClick={toggleLogoutDialog}>
                   Cancel
                 </button>

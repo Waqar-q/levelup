@@ -40,6 +40,7 @@ const CoursePage: React.FC = () => {
   const user_id = localStorage.getItem("user_id");
   const csrftoken = getCookie("csrftoken");
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const dialogRef2 = useRef<HTMLDialogElement>(null);
   const [isEnrolled, setEnrolled] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [openedModule, setOpenedModule] = useState<string>();
@@ -283,12 +284,14 @@ const CoursePage: React.FC = () => {
   };
 
   const toggleEnrollDialog = () => {
-    if (dialogRef.current?.open) {
+    if (dialogRef.current?.open || dialogRef2.current?.open) {
       document.body.classList.remove("no-scroll");
       dialogRef.current?.close();
+      dialogRef2.current?.close();
     } else {
       document.body.classList.add("no-scroll");
       dialogRef.current?.showModal();
+      dialogRef2.current?.showModal();
     }
   };
 
@@ -881,13 +884,13 @@ const CoursePage: React.FC = () => {
                     Enroll Now
                   </button>
                   <dialog
-                    className="dialog enroll-dialog z-[999]"
-                    ref={dialogRef}
+                    className="dialog enroll-dialog absolute flex-col place-items-center right-1/2 top-1/2  z-[999]"
+                    ref={dialogRef2}
                   >
                     <p className="my-5 text-center">
                       Are you sure you want to Enroll?
                     </p>
-                    <div className="flex w-full">
+                    <div className="flex w-full justify-center cursor-pointer">
                       <button
                         type="button"
                         onClick={toggleEnrollDialog}

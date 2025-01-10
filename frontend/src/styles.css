@@ -12,6 +12,7 @@
     --secondary-light: #fbae55;
 
     --orange-gradient-background: linear-gradient(to right, var(--secondary), var(--secondary-light));
+    --blue-gradient-background: linear-gradient(-135deg, #00BFFF, #800080);
 
 }
 
@@ -33,9 +34,9 @@ h1, h2, h3, h4, h5, h6{
 }
 
 .btn, button{
-    @apply font-sans px-6 py-3 rounded-full text-light font-semibold border-primary border
-    mx-1;
-    background: var(--orange-gradient-background);
+    @apply font-sans px-6 py-3 rounded-full text-light font-semibold border-accent border
+    mx-1 cursor-pointer;
+    background: var(--blue-gradient-background);
 }
 
 input, textarea{
@@ -90,6 +91,10 @@ label{
     z-index: 1000;
 }
 
+.no-scroll{
+    overflow: hidden;   
+}
+
 .dialog{
     @apply flex-col justify-center p-6 bg-light shadow-md shadow-accent_light relative 
     left-[50%] top-[1/2] -translate-x-[50%] -translate-y-[50%] rounded-2xl w-2/3 max-w-96;
@@ -115,6 +120,11 @@ label{
     @apply my-5;
 }
 
+/*Login Page Style*/
+section.login {
+    
+  background: linear-gradient(-135deg, #00BFFF, #800080);
+}
 
 
 /* Explore Page Style*/
