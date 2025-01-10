@@ -22,9 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 SECRET_KEY= config('SECRET_KEY')
 
@@ -137,18 +136,19 @@ MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
 FULL_MEDIA_URL = 'http://localhost:8000/media/'
 
 ALLOWED_HOSTS = [
-    "localhost"]   
+    "localhost",
+    "levelup-tuhc.onrender.com"]   
 
 CORS_ALLOWED_ORIGINS = [
      "http://localhost:3000",
      "http://localhost:8000",
-     "https://6565-2402-3a80-1aa6-75bc-9d12-62c3-a448-111f.ngrok-free.app",
+     
  ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     "http://localhost:8000",
-    'https://6565-2402-3a80-1aa6-75bc-9d12-62c3-a448-111f.ngrok-free.app',
+    
 ]
 
 CSRF_COOKIE_SECURE = False
