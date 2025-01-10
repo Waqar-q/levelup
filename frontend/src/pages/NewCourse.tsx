@@ -34,7 +34,6 @@ const userID = localStorage.getItem("user_id");
   const [filePreview, setFilePreview] = useState(defaultThumbnail);
 
   useEffect(() => {
-    console.log("Updated newCourse with thumbnail:", newCourse);
   }, [newCourse.thumbnail]);
 
   useEffect(() => {
@@ -56,7 +55,6 @@ const userID = localStorage.getItem("user_id");
 
     const getCategories = async () => {
       const categories: CourseCategory[] = await fetchCategories();
-      console.log("running catgeories")
       setNewCourse(prev => ({
         ...prev,
         category: categories[0].id.toString(),
@@ -75,7 +73,6 @@ const userID = localStorage.getItem("user_id");
         });
       }
     };
-    console.log("NEW COURSE AFTER FILE:", newCourse);
     getSubcategories();
   }, [newCourse.category]);
 
@@ -119,7 +116,6 @@ const userID = localStorage.getItem("user_id");
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Subcatgeories data:", data);
         setSubcategories(data["Subcategories"]);
         return data["Subcategories"];
       }
@@ -154,7 +150,6 @@ const userID = localStorage.getItem("user_id");
 
   const submitForm = async () => {
     const formData = new FormData();
-    console.log("New Course", newCourse);
     formData.append("course_name", newCourse.course_name);
     formData.append("instructor", newCourse.instructor);
     formData.append("tag_line", newCourse.tag_line);
@@ -167,7 +162,6 @@ const userID = localStorage.getItem("user_id");
     formData.append("subcategory", newCourse.subcategory);
 
     if (newCourse.thumbnail) {
-      console.log("Form data me image daal rhe hain", newCourse.thumbnail);
       formData.append("thumbnail", newCourse.thumbnail);
     }
     try {
@@ -184,7 +178,6 @@ const userID = localStorage.getItem("user_id");
 
       if (response.ok) {
         const data = await response.json();
-        console.log("New course data:", data);
         toast.success("New Course Created.");
         setNewCourse((prev) => ({
           ...prev,

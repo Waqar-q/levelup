@@ -131,7 +131,7 @@ const CoursePage: React.FC = () => {
               return response.json();
             })
             .then((data) => {
-              console.log("Related Courses:", data);
+              
               setRelatedCourses(data.results);
             });
 
@@ -149,7 +149,7 @@ const CoursePage: React.FC = () => {
               return response.json();
             })
             .then((user) => {
-              console.log("User:", user);
+              
               setUser(user);
               if (user.courses.includes(id)) {
                 setEnrolled(true);
@@ -172,7 +172,7 @@ const CoursePage: React.FC = () => {
               return response.json();
             })
             .then((instructor_data) => {
-              console.log("Instructor:", instructor_data);
+              
               setInstructor(instructor_data);
             });
         });
@@ -257,7 +257,6 @@ const CoursePage: React.FC = () => {
 
   const tickClick = async (pname: string, value: string) => {
     try {
-      console.log("stringify:", JSON.stringify({ [pname]: value }));
 
       const response = await fetch(
         process.env.REACT_APP_BASE_FRONT_URL + "/api/courses/" + id + "/",
@@ -314,7 +313,6 @@ const CoursePage: React.FC = () => {
         throw new Error("Enroll response not OK.");
       } else {
         const data = await response.json();
-        console.log("Enroll:", data);
         setEnrolled(true);
         toggleEnrollDialog();
       }

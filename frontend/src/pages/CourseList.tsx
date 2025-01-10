@@ -66,7 +66,6 @@ const CourseList: React.FC = () => {
         return response.json();
       })
       .then((instructor_data) => {
-        console.log("Instructor:", instructor_data);
         setInstructor(instructor_data);
       });
   };

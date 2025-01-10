@@ -60,7 +60,6 @@ const Login: React.FC = () => {
         throw new Error("Network response was not ok");
       } else {
         const data = await response.json();
-        console.log(data);
         if (data["message"] === "Successful") {
           toast.success("You have been successfully logged in.");
           setUser({
@@ -154,7 +153,6 @@ const Login: React.FC = () => {
     window.FB.login(
       async (response: any) => {
         if (response.authResponse) {
-          console.log("Login successful", response.authResponse.accessToken);
           const accessToken = response.authResponse.accessToken;
 
           try {
@@ -178,7 +176,6 @@ const Login: React.FC = () => {
               console.log("Response is not OK", backend_response);
             } else {
               const data = await backend_response.json();
-              console.log(data);
               navigate(-1);
             }
           } catch (error) {

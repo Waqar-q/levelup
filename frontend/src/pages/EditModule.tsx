@@ -97,7 +97,7 @@ const EditModule: React.FC = () => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
+      
       setCourse(data);
       if (data.instructor == user_id) {
         setIsOwner(true);
@@ -187,7 +187,7 @@ const EditModule: React.FC = () => {
 
   const submitModule = async () => {
     const formData = new FormData();
-    console.log("New Module", newModule);
+   
     formData.append("module_name", newModule.module_name);
     formData.append("description", newModule.description);
     formData.append("course", newModule.course);
@@ -206,7 +206,7 @@ const EditModule: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("New module data:", data);
+        
         toast.success("New Module Created.");
         setNewModule((prev) => ({
           ...prev,
@@ -226,7 +226,7 @@ const EditModule: React.FC = () => {
 
   const submitLecture = async () => {
     const formData = new FormData();
-    console.log("New Lecture", newLecture);
+    
     formData.append("lecture_name", newLecture.lecture_name);
     formData.append("video_link", newLecture.video_link);
     formData.append("module", newLecture.module);
@@ -245,7 +245,7 @@ const EditModule: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("New lecture data:", data);
+        
         toast.success("New Lecture Created.");
         setNewLecture((prev) => ({
           ...prev,
