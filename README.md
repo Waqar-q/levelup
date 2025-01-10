@@ -1,17 +1,37 @@
-# levelup
-An online Learning Platform
+# Welcome to Level Up
+Level Up is an online learning platform which was made as the final project for a course named "CS50's Web Development with Python and Javascript" by Harvard University. It is a website with it's frontend based on react.js and backend based on Django. It works on the idea that anyone can curate video tutorials of various Youtubers to make their own custom designed course.
 
-First time I am making sure modularity and reusability before even starting the project. This will create consistency in design and make me work faster. Taking care of theme and repeatable elements in the start itself.
+## Distinctiveness and Complexity  
+Explain the unique features and complexity compared to other projects in your course.
 
-Dec 10, 2024 : I have realised that the easier way i was using to check if the user was logged in by using a variable in the localStorage, would have to b esent in request to the backend to check if the user is logged in. also if the user changes, backend does not know. so i have decided to use the jwt(JSON web token) in django. this will save a cookie under the name 'jwt' which can tell me in the backend about login situation. Also the user stays updated along the backend. 
+## File Structure and Contents  
 
-I have learned that there are alot of things based on user data, hence it should be properly configured and login, register etc processes should be fully completed before going on to other things. Now I am having issues to change hings when user changes.
 
-Dec 11, 2024: I learned that HTTP-only cookies cannot be accessed in frontend.
-I am trying to make a custom MIDDLEWARE to keep track of the user using jwt tokens.
+## Installation Instructions  
 
-Dec 12, 2024: I learned that if we "setStateVariable()" inside component will result infinite re-rendering.
 
-Dec 21, 2024: I have countered numerous problems due to the timing of fetch() overlapping with other fetches and long .then() chains. I thought code will excecute in sequence if .then is used. But state variables are queued by react irrespective of .then().
+## Usage Instructions  
+1. **Login & Sign Up**: Start from the login page. at the bottom you will find a sign up link. Sign up by making a new user account.
+2. **Select Role**: Select Instructor/Student.
+3. **Explore**: Explore various courses on the explore page.
+4. **Search**: You can even search a specific course by clicking on search icon/button in top right.
+5. **Filter**: You can filter the courses by trending or free.
+5. **Course Page**: Click on any course to view all about it.
+6. **Enroll**: You can enroll just by clicking on "Enroll" button.
+7. **Course Access**: Once enrolled, you'll be able to see course modules and inside each module, there will be muliple lectures.
+8. **Edit Course Fields Dynamically**: If you are the Creator/Instructor of the course, you'll see a small edit icon near course details like near course title, tagline, description etc. You can edit them there only and click on tick to confirm.
+9. **Add Modules Dynamically**: If you want to edit/add modules of your created course, then in top right options you'll find "Edit Modules" option where you can add modules and add lectures inside it.
+10. **Profile**: You can edit your personal details in Profile page.
+11. **Settings**: You can access options like logout here.
 
-Dec 25, 2024: After 2 days i realised that setState({...variable, key:value}) is different from setState(variable => ({...variable, key:value})) as due to asynchronous nature of JS, former updates using current state of variable, whereas the latter updates after any other state changes in sequence have occured.
+## Requirements  
+View all dependencies in **requirements.txt**
+
+## Known Issues and Limitations
+
+## Future Improvements
+
+## Stay Connected
+Instagram: [waqar_curious](https://www.instagram.com/waqar_curious)
+GitHub: [Waqar-q](https://www.github.com/Waqar-q)
+LinkedIn: [Waqar Qureshi](https://www.linkedin.com/in/mrwaqarqureshi/)
