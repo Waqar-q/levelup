@@ -41,7 +41,7 @@ const Card: React.FC<CardProps> = ({className = "", course}) => {
                 <i className="material-icons-outlined text-accent_light">visibility</i>
               </div>
               <p className="instructor text-sm my-1 text-gray-500">
-              {course.instructor.name}
+              {course.instructor?.name}
             </p>            
           </div>
           </div>

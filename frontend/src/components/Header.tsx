@@ -1,8 +1,9 @@
-import React from "react";
+import React, { MouseEventHandler, useEffect } from "react";
 import Logo from "./Logo";
 import Sidebar from "./Sidebar";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import User from "./pages/Test"
 
 interface HeaderProps {
   page?: string;
@@ -10,25 +11,68 @@ interface HeaderProps {
   options?: {
     name: string;
     link: string;
+    onclick?:MouseEventHandler;
   }[];
 }
 
-const Header: React.FC<HeaderProps> = ({ className = "", page, options }) => {
+
+
+const Header: React.FC<HeaderProps> = ({ className = "", page, options  }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const pathWithoutBackButton = ["/explore"];
   const hideBackButton = pathWithoutBackButton.includes(location.pathname);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const [user, setUser] = useState<User>();
+  const user_id = localStorage.getItem("user_id");
+  const [role, setRole] = useState("student");
 
+  
+useEffect(() => {
+  fetchUser()
+},[user_id])
+
+  const fetchUser = () => fetch(
+    process.env.REACT_APP_BASE_BACK_URL + `/api/users/${user_id}/`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+    }
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((user) => {
+      console.log(user)
+      setUser(user);
+      if (user.role == "instructor") {
+        setRole("instructor");
+      }
+      return user;
+    });
+    
   return (
     <header
-      className={`header ${className} grid grid-cols-[20%_60%_20%] xl:grid-cols-[45%_10%_45%] fixed right-0 left-0 items-center justify-center h-16 border-b bg-light border-gray-200`}
+      className={`header ${className} grid grid-cols-[20%_60%_20%] xl:grid-cols-[47%_6%_47%] fixed right-0 left-0 items-center justify-center h-16 border-b bg-light border-gray-200`}
     >
       {hideBackButton ? (
         <>
           <Sidebar className="justify-self-start" />
           <Logo className="justify-self-center w-14" />
-          <ul className="justify-self-end flex justify-between h-full max-w-full   items-center mx-5">
+          <ul className="justify-self-end flex justify-between h-full max-w-full items-center mx-5">
+          {role == "instructor" && <li
+              key="new-course"
+              className="px-2 hover:text-secondary_light text-md items-center flex"
+            >
+              <Link to="/new-course" className="flex items-center">
+                <i className="material-icons-outlined xl:text-2xl text-4xl">
+                  add
+                </i>
+                <p className="xl:flex hidden">Create Course</p>
+              </Link>
+            </li>}
             <li
               key="notifications"
               className="px-2 hover:text-secondary_light text-md hidden items-center xl:flex"
@@ -176,7 +220,7 @@ const Header: React.FC<HeaderProps> = ({ className = "", page, options }) => {
                         className="px-4 text-dark text-lg py-1 border-b border-gray-200"
                         key={option.name}
                       >
-                        <Link to={option.link}>{option.name}</Link>
+                        <Link to={option.link} onClick={option.onclick}>{option.name}</Link>
                       </li>
                     ))}
                   </ul>

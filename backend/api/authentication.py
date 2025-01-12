@@ -24,7 +24,7 @@ class JWTAuthentication(BaseAuthentication):
         token = request.COOKIES.get('jwt') 
         print(request.path)
 
-        if request.path == "/api/auth/login/":
+        if request.path in ["/api/auth/login/", settings.STATIC_URL, settings.MEDIA_URL]:
             return None
         
         if not token:

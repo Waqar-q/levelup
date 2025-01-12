@@ -89,6 +89,7 @@ label{
     backdrop-filter: blur(10px);
     background-color: rgba(255, 255, 255, 0.5);
     z-index: 1000;
+    max-height: 100vh;
 }
 
 .no-scroll{

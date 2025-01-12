@@ -43,9 +43,11 @@ const CourseList: React.FC = () => {
       )
         .then((response) => response.json())
         .then((data) => {
+          if (data){
           setCourses(data.results);
           setNextCourses(data.next);
           setPreviousCourses(data.previous);
+        }
         });
     } catch (error) {
       console.log(error);
@@ -158,8 +160,7 @@ const CourseList: React.FC = () => {
         ) : null}
       </div>
       <div className="list xl:grid grid-cols-3 gap-5 xl:mx-10">
-        {courses &&
-          courses.map((course) => (
+        {courses?.length > 0  ? (courses.map((course) => (
             <>
               <Link to={`/course/${course.id}`} className="hidden xl:flex justify-center  ">
                 <Card key={course.id} course={course} className="h-96" />
@@ -207,7 +208,13 @@ const CourseList: React.FC = () => {
               </div>
             </a>
             </>
-          ))}
+          ))) : (
+            <>
+            <div></div>
+            <p className="px-4 italic text-gray-700 flex justify-center w-full">Try something else..</p>
+            <div></div>
+            </>
+          )}
         
       </div>
       <div className="pagination py-2 flex place-content-center">

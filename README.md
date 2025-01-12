@@ -21,6 +21,9 @@ Knowing that if a variable in the dependency array is set inside useEffect, it w
 Earlier submitting a form without refreshing the whole page was difficult.
 Therefore I have implemented reactive forms. When a field is edited, the state variable keeps track of each keystroke entered in the field and whenever we press submit the form data is sent as a PATCH request. Then the returned updated data is re-entered into the fields (in case of profile page form). In case of Course editing, small edit icons can be seen by you if you are the instructor/creator of the course. Thus you as an instructor, when clicks the edit button, the data becomes an input field/textarea and you can edit the field individually and then you can click on the green tick and it will be saved right there without even going to another page. 
 
+### Conditional Rendering:
+There are a lot of places where I have used conditional rendering. A student not enrolled cannot see course modules & lectures in it. Only the user who has created the course can see edit buttons and can edit fields, can edit modules, and can delete the whole course. If a student is not initially enrolled in ANY course, then a section of "My Courses" is not shown.
+
 ### Local Storage:
 I earlier saved user data to local storage, which could be insecure. So I used JSON Web Tokens(JWT) to maintain sessions. Now only basic frequently reused info is saved in the local storage.
 
@@ -158,7 +161,7 @@ Basic Structure and major files. Also frontend>src>pages has important javascrip
 
 **Navigate to frontend:** cd ../frontend <br>
 **Install dependencies:** npm install <br>
-**Start frontend server:** npm start <br>
+**Start frontend server:** npm run start <br>
 
 ### Access Application:
 

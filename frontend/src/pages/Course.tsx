@@ -5,10 +5,10 @@ import Input from "../components/Input_Field";
 import googleLogo from "../assets/Google-G-logo.png";
 import facebookLogo from "../assets/facebook-logo.png";
 import { Course, CourseCategory, User } from "./Test";
-import { Link, useFetcher, useParams } from "react-router-dom";
+import { Link, useFetcher, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Card from "../components/Card";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import getCookie from "../utilities/getCookie";
 import BottomMenu from "../components/Bottom_Menu";
 
@@ -41,10 +41,13 @@ const CoursePage: React.FC = () => {
   const csrftoken = getCookie("csrftoken");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const dialogRef2 = useRef<HTMLDialogElement>(null);
+  const deleteDialogRef = useRef<HTMLDialogElement>(null);
   const [isEnrolled, setEnrolled] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [openedModule, setOpenedModule] = useState<string>();
   const [loadingModules, setLoadingModules] = useState(true);
+  const navigate = useNavigate();
+
 
   const [fieldEdit, setFieldEdit] = useState({
     course_name: false,
@@ -290,6 +293,18 @@ const CoursePage: React.FC = () => {
     }
   };
 
+  const toggleDeleteDialog = () => {
+    if (deleteDialogRef.current?.open || deleteDialogRef.current?.open) {
+      document.body.classList.remove("no-scroll");
+      deleteDialogRef.current?.close();
+      deleteDialogRef.current?.close();
+    } else {
+      document.body.classList.add("no-scroll");
+      deleteDialogRef.current?.showModal();
+      deleteDialogRef.current?.showModal();
+    }
+  };
+
   const enroll = async (id: string | undefined) => {
     try {
       const response = await fetch(
@@ -317,6 +332,36 @@ const CoursePage: React.FC = () => {
     }
   };
 
+  const deleteCourse = async (id: string | undefined) => {
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_BASE_FRONT_URL + `/api/courses/${id}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken,
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        toast.error("Something went wrong.");
+        throw new Error("Delete response not OK.");
+      } else {
+        const text = await response.text();
+        console.log(text);
+        toggleDeleteDialog();
+        toast.success("Course deleted successfully.")
+        navigate("/explore")
+        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
   const extractVideoId = (url: string) => {
     const regExp =
       /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -332,20 +377,43 @@ const CoursePage: React.FC = () => {
     }
   };
 
+
+
   return (
     <section className="course-page">
+      <ToastContainer/>
       {course && (
         <>
+
           <Header
             page="Course"
             className="z-[900]"
             options={[
               ...(isOwner
-                ? [{ name: "Edit Modules", link: `/edit-module/${course.id}` }]
+                ? [{ name: "Edit Modules", link: `/edit-module/${course.id}` },
+                  { name: "Delete", link: ``, onclick:() => toggleDeleteDialog()}]
                 : []),
-              { name: "Delete", link: `/delete/?course=${course.id}` },
             ]}
           />
+          <dialog
+                    className="dialog delete-dialog absolute flex-col place-content-center right-1/2 z-[999]"
+                    ref={deleteDialogRef}
+                  >
+                    <p className="my-5 text-center">
+                      Are you sure you want to delete this Course?
+                    </p>
+                    <div className="flex w-full justify-center cursor-pointer">
+                      <button
+                        type="button"
+                        onClick={toggleDeleteDialog}
+                        autoFocus
+                      >
+                        Cancel
+                      </button>
+                      <button onClick={() => deleteCourse(id)}>Delete</button>
+                    </div>    
+
+                  </dialog>
           <div className="xl:pt-20 xl:pb-0 pb-36 xl:mx-64">
             <div
               className="course-page-thumbnail xl:hidden w-full relative"
@@ -362,7 +430,7 @@ const CoursePage: React.FC = () => {
             <div className="flex justify-between">
               <img
                 src={thumbnail.src}
-                className={`course-page-thumbnail shadow-lg shadow-accent_light hidden xl:flex relative rounded-xl overflow-clip`}
+                className={`course-page-thumbnail max-w-[550px] shadow-lg shadow-accent_light hidden xl:flex relative rounded-xl overflow-clip`}
               ></img>
               <div className="wrapper hidden xl:flex flex-col gap-5 p-5 items-end justify-center ">
                 <div className="rating flex py-1 pl-2 items-center text-3xl">
@@ -901,7 +969,7 @@ const CoursePage: React.FC = () => {
                 <div className="wrapper my-3">
                   <h4>Modules</h4>
                   {modules.map((module) => (
-                    <div className="module">
+                    <div className="module cursor-pointer">
                       <div
                         key={module.module_name}
                         onClick={(e) => toggleModule(module.id)}

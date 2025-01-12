@@ -197,24 +197,30 @@ const NewCourse: React.FC = () => {
     <section className="new-course">
       <ToastContainer />
       <Header page="New Course" />
-      <form action="" className="flex flex-col gap-4 p-5 py-20">
+      <form action="" className="flex xl:flex-row flex-col gap-4 p-5 py-20">
+        <div className="flex flex-col">
         <label htmlFor="imageThumbnail">Upload Course Thumbnail</label>
         <div>
           <label htmlFor="fileInput">
-            <div className="overflow-clip max-h-64 flex items-center rounded-xl">
+            <div className="overflow-clip max-h-64 xl:max-h-none xl:max-w-screen-sm flex items-center rounded-xl">
               <img
                 className="rounded-xl"
                 src={filePreview}
                 alt="Upload Thumbnail"
               />
             </div>
+              
           </label>
           <input
             className="border-none"
             type="file"
             onChange={(e) => handleFileChange(e)}
           />
+
         </div>
+        </div>
+        <div className="flex xl:flex-row flex-col">
+        <div className="flex flex-col gap-4 xl:p-5 xl:py-0">
         <label htmlFor="course_name">Course Name</label>
         <input
           type="text"
@@ -247,6 +253,11 @@ const NewCourse: React.FC = () => {
           onChange={handleInputChange}
           value={newCourse.requirements}
         />
+        </div>
+
+
+
+        <div className="flex flex-col gap-4 justify-between">
         <label htmlFor="duration">Course Duration (in hours)</label>
         <input
           type="number"
@@ -426,9 +437,11 @@ const NewCourse: React.FC = () => {
               </option>
             ))}
         </select>
-        <button type="button" onClick={submitForm}>
+        <button type="button" onClick={submitForm} className="max-w-96 max-h-12">
           Create New Course
         </button>
+        </div>
+        </div>
       </form>
       <BottomMenu />
     </section>

@@ -357,7 +357,7 @@ const EditModule: React.FC = () => {
                         className="module-box border-b flex"
                       >
                         <div
-                          className="flex justify-between p-5 w-full font-semi-bold bg-gray-00"
+                          className="flex justify-between p-5 w-full font-semi-bold bg-gray-00 cursor-pointer"
                           onClick={(e) => toggleModule(module.id)}
                         >
                           <p className="module-name ">{module.module_name}</p>
