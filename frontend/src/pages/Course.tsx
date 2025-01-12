@@ -131,7 +131,6 @@ const CoursePage: React.FC = () => {
               return response.json();
             })
             .then((data) => {
-              
               setRelatedCourses(data.results);
             });
 
@@ -149,7 +148,6 @@ const CoursePage: React.FC = () => {
               return response.json();
             })
             .then((user) => {
-              
               setUser(user);
               if (user.courses.includes(id)) {
                 setEnrolled(true);
@@ -172,7 +170,6 @@ const CoursePage: React.FC = () => {
               return response.json();
             })
             .then((instructor_data) => {
-              
               setInstructor(instructor_data);
             });
         });
@@ -257,7 +254,6 @@ const CoursePage: React.FC = () => {
 
   const tickClick = async (pname: string, value: string) => {
     try {
-
       const response = await fetch(
         process.env.REACT_APP_BASE_FRONT_URL + "/api/courses/" + id + "/",
         {

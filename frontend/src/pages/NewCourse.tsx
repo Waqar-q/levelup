@@ -11,7 +11,7 @@ import { Course, CourseCategory, CourseSubcategory } from "./Test";
 const NewCourse: React.FC = () => {
   const navigate = useNavigate();
   const csrftoken = getCookie("csrftoken");
-const userID = localStorage.getItem("user_id");
+  const userID = localStorage.getItem("user_id");
   const [newCourse, setNewCourse] = useState<Course>({
     id: "",
     course_name: "",
@@ -33,8 +33,7 @@ const userID = localStorage.getItem("user_id");
 
   const [filePreview, setFilePreview] = useState(defaultThumbnail);
 
-  useEffect(() => {
-  }, [newCourse.thumbnail]);
+  useEffect(() => {}, [newCourse.thumbnail]);
 
   useEffect(() => {
     fetch(defaultThumbnail)
@@ -42,20 +41,19 @@ const userID = localStorage.getItem("user_id");
       .then((blob) => {
         const file = new File([blob], "default_thumbnail.jpg", {
           type: "image/jpeg",
-          lastModified: new Date().getTime()
+          lastModified: new Date().getTime(),
         });
-        
+
         // TypeScript now knows file is definitely a File object
-        setNewCourse(prev => ({
+        setNewCourse((prev) => ({
           ...prev,
-          thumbnail: file as File  // Explicitly tell TypeScript this is a File
+          thumbnail: file as File, // Explicitly tell TypeScript this is a File
         }));
       });
-  
 
     const getCategories = async () => {
       const categories: CourseCategory[] = await fetchCategories();
-      setNewCourse(prev => ({
+      setNewCourse((prev) => ({
         ...prev,
         category: categories[0].id.toString(),
       }));

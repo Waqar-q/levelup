@@ -191,75 +191,83 @@ const Login: React.FC = () => {
 
   return (
     <section className="login flex flex-col justify-between items-center xl:flex-row xl:p-0  p-5 h-[100vh] overflow-clip">
-      
-      <img src={loginImage} alt="" className="hidden xl:flex h-[150%] justify-self-start max-w-screen-lg "/>
+      <img
+        src={loginImage}
+        alt=""
+        className="hidden xl:flex h-[150%] justify-self-start max-w-screen-lg "
+      />
       <span className="absolute xl:top-10 top-5 right-5 xl:right-[55%] xl:bg-transparent bg-white rounded-lg xl:rounded-none">
-      <Logo className="xl:w-28 w-20"/></span>
+        <Logo className="xl:w-28 w-20" />
+      </span>
       <ToastContainer />
       <div className=" py-10 xl:px-40 flex flex-col justify-between items-start h-full">
-      <div className="heading flex-col justify-between">
-        <h1 className="text-5xl py-5">Login</h1>
-        <p className="text-lg">Enter the new era of learning.</p>
-      </div>
-      <form
-        onSubmit={handleLogin}
-        method="get"
-        className="h-2/3 flex flex-col justify-evenly max-h-[600px]"
-      >
-        <div className="flex flex-col">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            onChange={handleChange}
-            name="email"
-            value={formData.email}
-            placeholder="Enter your email address"
-          />
+        <div className="heading flex-col justify-between">
+          <h1 className="text-5xl py-5">Login</h1>
+          <p className="text-lg">Enter the new era of learning.</p>
         </div>
-        <div className="">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            onChange={handleChange}
-            name="password"
-            value={formData.password}
-            placeholder="Enter your password"
-          />
-        </div>
-        <button type="submit" className="mb-5 justify-self-center max-w-96">
-          Login
-        </button>
-      </form>
-      <hr />
-      <div className="social-login flex flex-col items-center w-full">
-        <p className="my-4">
-          Other ways to login or{" "}
-          <Link className="underline" to="/signup">
-            signup
-          </Link>
-        </p>
-        <div className="flex justify-center w-full">
-          <button
-            type="button"
-            className="w-1/2 flex justify-center items-center bg-none bg-white h-10 border-none text-gray-600 font-normal text-[12px]"
-            onClick={handleFacebookLogin}
-          >
-            <img src={facebookLogo} className="w-6 mx-1" alt="Facebook Logo" />
-            Sign in with Facebook
+        <form
+          onSubmit={handleLogin}
+          method="get"
+          className="h-2/3 flex flex-col justify-evenly max-h-[600px]"
+        >
+          <div className="flex flex-col">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              onChange={handleChange}
+              name="email"
+              value={formData.email}
+              placeholder="Enter your email address"
+            />
+          </div>
+          <div className="">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              onChange={handleChange}
+              name="password"
+              value={formData.password}
+              placeholder="Enter your password"
+            />
+          </div>
+          <button type="submit" className="mb-5 justify-self-center max-w-96">
+            Login
           </button>
-          <GoogleLogin
-            onSuccess={handleGoogleLoginSuccess}
-            onError={handleGoogleLoginFailure}
-            type="standard"
-            theme="outline"
-            size="large"
-            text="signin_with"
-            shape="pill"
-            logo_alignment="center"
-            width="100%"
-          />
+        </form>
+        <hr />
+        <div className="social-login flex flex-col items-center w-full">
+          <p className="my-4">
+            Other ways to login or{" "}
+            <Link className="underline" to="/signup">
+              signup
+            </Link>
+          </p>
+          <div className="flex justify-center w-full">
+            <button
+              type="button"
+              className="w-1/2 flex justify-center items-center bg-none bg-white h-10 border-none text-gray-600 font-normal text-[12px]"
+              onClick={handleFacebookLogin}
+            >
+              <img
+                src={facebookLogo}
+                className="w-6 mx-1"
+                alt="Facebook Logo"
+              />
+              Sign in with Facebook
+            </button>
+            <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={handleGoogleLoginFailure}
+              type="standard"
+              theme="outline"
+              size="large"
+              text="signin_with"
+              shape="pill"
+              logo_alignment="center"
+              width="100%"
+            />
+          </div>
         </div>
-      </div>
       </div>
       <div className="xl:hidden"></div>
     </section>
