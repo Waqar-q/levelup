@@ -48,7 +48,6 @@ const CoursePage: React.FC = () => {
   const [loadingModules, setLoadingModules] = useState(true);
   const navigate = useNavigate();
 
-
   const [fieldEdit, setFieldEdit] = useState({
     course_name: false,
     tag_line: false,
@@ -324,6 +323,7 @@ const CoursePage: React.FC = () => {
         throw new Error("Enroll response not OK.");
       } else {
         const data = await response.json();
+        console.log("enrolled")
         setEnrolled(true);
         toggleEnrollDialog();
       }
@@ -353,15 +353,14 @@ const CoursePage: React.FC = () => {
         const text = await response.text();
         console.log(text);
         toggleDeleteDialog();
-        toast.success("Course deleted successfully.")
-        navigate("/explore")
-        
+        toast.success("Course deleted successfully.");
+        navigate("/explore");
       }
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   const extractVideoId = (url: string) => {
     const regExp =
       /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -377,42 +376,78 @@ const CoursePage: React.FC = () => {
     }
   };
 
-
-
   return (
     <section className="course-page">
-      <ToastContainer/>
+      <ToastContainer />
       {course && (
         <>
-
           <Header
             page="Course"
             className="z-[900]"
             options={[
               ...(isOwner
-                ? [{ name: "Edit Modules", link: `/edit-module/${course.id}` },
-                  { name: "Delete", link: ``, onclick:() => toggleDeleteDialog()}]
+                ? [
+                    { name: "Edit Modules", link: `/edit-module/${course.id}` },
+                    {
+                      name: "Delete",
+                      link: ``,
+                      onclick: () => toggleDeleteDialog(),
+                    },
+                  ]
                 : []),
             ]}
           />
           <dialog
-                    className="dialog delete-dialog absolute flex-col place-content-center right-1/2 z-[999]"
-                    ref={deleteDialogRef}
+            className="dialog delete-dialog absolute flex-col place-content-center right-1/2 z-[999]"
+            ref={deleteDialogRef}
+          >
+            <p className="my-5 text-center">
+              Are you sure you want to delete this Course?
+            </p>
+            <div className="flex w-full justify-center cursor-pointer">
+              <button type="button" onClick={toggleDeleteDialog} autoFocus>
+                Cancel
+              </button>
+              <button onClick={() => deleteCourse(id)}>Delete</button>
+            </div>
+          </dialog>
+
+          <dialog
+                    className="dialog enroll-dialog absolute flex-col place-items-center right-1/2 top-1/2"
+                    ref={dialogRef2}
                   >
                     <p className="my-5 text-center">
-                      Are you sure you want to delete this Course?
+                      Are you sure you want to Enroll?
                     </p>
                     <div className="flex w-full justify-center cursor-pointer">
                       <button
                         type="button"
-                        onClick={toggleDeleteDialog}
+                        onClick={toggleEnrollDialog}
                         autoFocus
                       >
                         Cancel
                       </button>
-                      <button onClick={() => deleteCourse(id)}>Delete</button>
-                    </div>    
+                      <button onClick={() => enroll(id)}>Enroll</button>
+                    </div>
+                  </dialog>
 
+          <dialog
+                    className="dialog z-[999999] enroll-dialog"
+                    ref={dialogRef}
+                  >
+                    <p className="my-5 text-center">
+                      Are you sure you want to Enroll?
+                    </p>
+                    <div className="flex w-full">
+                      <button
+                        type="button"
+                        onClick={toggleEnrollDialog}
+                        autoFocus
+                      >
+                        Cancel
+                      </button>
+                      <button onClick={() => enroll(id)}>Enroll</button>
+                    </div>
                   </dialog>
           <div className="xl:pt-20 xl:pb-0 pb-36 xl:mx-64">
             <div
@@ -427,7 +462,6 @@ const CoursePage: React.FC = () => {
                 height: `${thumbnail.height - 40}px`,
                 minHeight: `200px`,
                 maxHeight: `280px`,
-
               }}
             ></div>
             <div className="flex justify-between">
@@ -948,24 +982,7 @@ const CoursePage: React.FC = () => {
                   >
                     Enroll Now
                   </button>
-                  <dialog
-                    className="dialog enroll-dialog absolute flex-col place-items-center right-1/2 top-1/2  z-[999]"
-                    ref={dialogRef2}
-                  >
-                    <p className="my-5 text-center">
-                      Are you sure you want to Enroll?
-                    </p>
-                    <div className="flex w-full justify-center cursor-pointer">
-                      <button
-                        type="button"
-                        onClick={toggleEnrollDialog}
-                        autoFocus
-                      >
-                        Cancel
-                      </button>
-                      <button onClick={() => enroll(id)}>Enroll</button>
-                    </div>
-                  </dialog>
+                  
                 </div>
               )}
               {(isEnrolled || isOwner) && modules?.length > 0 && (
@@ -1027,7 +1044,7 @@ const CoursePage: React.FC = () => {
               )}
 
               {!isEnrolled && (
-                <div className="flex xl:hidden fixed h-20 items-center justify-center border-t bottom-16 left-0 w-full bg-white px-5">
+                <div className="flex xl:hidden fixed h-20 items-center justify-center border-t bottom-16 left-0 w-full bg-white px-5 ">
                   <button
                     className="w-full"
                     onClick={(e) => {
@@ -1037,24 +1054,7 @@ const CoursePage: React.FC = () => {
                   >
                     Enroll
                   </button>
-                  <dialog
-                    className="dialog enroll-dialog z-[999]"
-                    ref={dialogRef}
-                  >
-                    <p className="my-5 text-center">
-                      Are you sure you want to Enroll?
-                    </p>
-                    <div className="flex w-full">
-                      <button
-                        type="button"
-                        onClick={toggleEnrollDialog}
-                        autoFocus
-                      >
-                        Cancel
-                      </button>
-                      <button onClick={() => enroll(id)}>Enroll</button>
-                    </div>
-                  </dialog>
+                  
                 </div>
               )}
 

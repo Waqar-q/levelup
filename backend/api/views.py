@@ -20,6 +20,7 @@ from backend.settings import GOOGLE_OAUTH2_CLIENT_ID, FACEBOOK_APP_ID, FACEBOOK_
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    
 
     @action(detail=False, methods=['GET'], url_path='enroll')
     def enroll(self, request):

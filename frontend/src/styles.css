@@ -88,8 +88,9 @@ label{
 .dialog::backdrop{
     backdrop-filter: blur(10px);
     background-color: rgba(255, 255, 255, 0.5);
-    z-index: 1000;
+    z-index: 9998;
     max-height: 100vh;
+    overflow: hidden;
 }
 
 .no-scroll{
@@ -97,8 +98,9 @@ label{
 }
 
 .dialog{
-    @apply flex-col justify-center p-6 bg-light shadow-md shadow-accent_light relative 
-    left-[50%] top-[1/2] -translate-x-[50%] -translate-y-[50%] rounded-2xl w-2/3 max-w-96;
+    @apply flex-col fixed justify-center p-6 bg-light shadow-md shadow-accent_light 
+    left-[50%] top-[50vh] -translate-x-[50%] -translate-y-[50%] rounded-2xl w-2/3 max-w-96;
+    z-index: 9999;
 }
 
 .settings .profile-settings li{
