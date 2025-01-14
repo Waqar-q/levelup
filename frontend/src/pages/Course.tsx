@@ -424,7 +424,10 @@ const CoursePage: React.FC = () => {
                 backgroundPosition: "top",
                 backgroundOrigin: "content-box",
                 backgroundRepeat: "no-repeat",
-                minHeight: `${thumbnail.height - 40}px`,
+                height: `${thumbnail.height - 40}px`,
+                minHeight: `200px`,
+                maxHeight: `280px`,
+
               }}
             ></div>
             <div className="flex justify-between">
